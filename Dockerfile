@@ -1,11 +1,17 @@
-FROM node:18-alpine
+FROM node:12.18.3-alpine3.9
+# Set the working directory in the container
+WORKDIR /app
 
-WORKDIR /internship-docker/
+# Copy the package.json and package-lock.json files to the container
+COPY package*.json ./
 
-COPY public/ /internship-docker/public
-COPY src/ /internship-docker/src
-COPY package.json /internship-docker/
-
+# Install the dependencies
 RUN npm install
 
-CMD["npm", "start"]
+# Copy the rest of the application code to the container
+COPY . .
+
+# Build the React app
+RUN npm run build
+
+CMD ["npm", "start"]
