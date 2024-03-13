@@ -27,8 +27,8 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ### `docker build -t * .`
 
-Builds the app in the Docker container with name specified instead of *.
+Builds the app in the Docker container with name specified instead of * in current directory.
 
-### `docker run -dp 8000:3000 --name 1 2`
+### `docker run -it --volume ./internship_meduzzen/:/app/ --name 2 -p 3000:3000 1`
 
 Runs Docker image named 1 from container named 2.

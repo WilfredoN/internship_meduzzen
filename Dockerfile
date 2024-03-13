@@ -1,17 +1,15 @@
-FROM node:12.18.3-alpine3.9
-# Set the working directory in the container
+FROM node:alpine
+
 WORKDIR /app
 
-# Copy the package.json and package-lock.json files to the container
+ENV PATH /app/node_modules/.bin:$PATH
+
 COPY package*.json ./
 
-# Install the dependencies
-RUN npm install
+RUN npm install --silent
+RUN npm install react-scripts@5.0.1 -g --silent
 
-# Copy the rest of the application code to the container
-COPY . .
+RUN npm install nodemon --save-dev
+COPY . ./
 
-# Build the React app
-RUN npm run build
-
-CMD ["npm", "start"]
+CMD ["nodemon", "--exec", "npm", "start"]
