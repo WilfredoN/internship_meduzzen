@@ -2,7 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './Components/Header/Header';
-
+import logo from './logo.svg';
 const About = lazy(() => import('./Pages/About/About'));
 const Users = lazy(() => import('./Pages/Users/Users'));
 const Companies = lazy(() => import('./Pages/Companies/Companies'));
@@ -11,13 +11,16 @@ const Register = lazy(() => import('./Pages/Registration/Registration'));
 const Login = lazy(() => import('./Pages/Login/Login'));
 function App() {
 	const API_URL = process.env.REACT_APP_API_URL;
-	console.log('API_URL:', API_URL);
 
 	return (
 		<BrowserRouter>
 			<div className="App">
 				<Header />
-				<Suspense fallback={<div>Loading...</div>}>
+				<Suspense
+					fallback={
+						<img src={logo} alt="logo" className="App-logo z-10" />
+					}
+				>
 					<Routes>
 						<Route path="/" element={<About />} />
 						<Route path="/about" element={<About />} />
