@@ -16,9 +16,6 @@ const Header = () => {
 				<Link className="hover:underline" to="/companies">
 					Companies
 				</Link>
-				<Link className="hover:underline" to="/profile">
-					Profile
-				</Link>
 			</div>
 			<div className="flex space-x-4">
 				<button
@@ -33,6 +30,12 @@ const Header = () => {
 				>
 					Sign In
 				</button>
+				{/* <Link className="hover:underline" to="/profile">
+						Profile
+					</Link> */}
+				{/* <Link className="hover:underline" to="/company/xxx">
+						Company */}
+				{/* TODO: User Profile and Company Profile visible (and register\login not visible) if user isAuth */}
 			</div>
 		</nav>
 	);
