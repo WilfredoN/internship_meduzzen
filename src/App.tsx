@@ -5,9 +5,10 @@ import Header from './Components/Header/Header';
 
 const About = lazy(() => import('./Pages/About/About'));
 const Users = lazy(() => import('./Pages/Users/Users'));
-// const Companies = lazy(() => import('./Pages/Companies/Companies'));
-// const Profile = lazy(() => import('./Pages/Profile/Profile'));
-
+const Companies = lazy(() => import('./Pages/Companies/Companies'));
+const UserProfile = lazy(() => import('./Pages/User_Profile/UserProfile'));
+const Register = lazy(() => import('./Pages/Registration/Registration'));
+const Login = lazy(() => import('./Pages/Login/Login'));
 function App() {
 	const API_URL = process.env.REACT_APP_API_URL;
 	console.log('API_URL:', API_URL);
@@ -18,10 +19,13 @@ function App() {
 				<Header />
 				<Suspense fallback={<div>Loading...</div>}>
 					<Routes>
+						<Route path="/" element={<About />} />
 						<Route path="/about" element={<About />} />
 						<Route path="/users" element={<Users />} />
-						{/* <Route path="/companies" element={<Companies />} /> */}
-						{/* <Route path="/profile" element={<Profile />} /> */}
+						<Route path="/companies" element={<Companies />} />
+						<Route path="/profile" element={<UserProfile />} />
+						<Route path="/register" element={<Register />} />
+						<Route path="/login" element={<Login />} />
 					</Routes>
 				</Suspense>
 			</div>
