@@ -3,7 +3,7 @@ import Table from '../../Components/Table/Table';
 
 const Companies = () => {
 	return (
-		<div className="companies mt-64">
+		<div className="companies">
 			<Table
 				data={Array.from({ length: 3 }, (_, i) => ({
 					id: i + 1,

@@ -5,7 +5,7 @@ import './Header.css';
 const Header = () => {
 	const navigate = useNavigate();
 	return (
-		<nav className="header fixed flex flex-row justify-between items-center space-x-4 p-12 mt-6 bg-gray-800 text-white rounded-full h-16 max-w-screen-lg w-full">
+		<nav className="header flex flex-row justify-between items-center space-x-4 p-12 mt-6 mb-16 bg-gray-800 text-white rounded-full h-16 max-w-screen-lg w-full">
 			<div className="flex space-x-4">
 				<Link className="hover:underline" to="/about">
 					About
