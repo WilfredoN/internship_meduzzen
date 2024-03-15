@@ -1,9 +1,8 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './Header.css';
 import HeaderButton from '../HeaderButton';
 const Header = () => {
-  const navigate = useNavigate();
   return (
     <nav className="header flex flex-row justify-between items-center space-x-4 p-12 mt-6 mb-16 bg-gray-800 text-white rounded-full h-16 max-w-screen-lg w-full">
       <div className="flex space-x-4">
@@ -30,9 +29,9 @@ const Header = () => {
           bgColor="bg-green-500"
           hoverColor="hover:bg-green-700"
         />
-        {/* <Link className="hover:underline" to="/profile">
-						Profile
-					</Link> */}
+        <Link className="hover:underline" to="/profile">
+          Profile
+        </Link>
         {/* <Link className="hover:underline" to="/company/xxx">
 						Company */}
         {/* TODO: User Profile and Company Profile visible (and register\login not visible) if user isAuth */}
