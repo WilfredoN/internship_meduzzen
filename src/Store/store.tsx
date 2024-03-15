@@ -1,19 +1,11 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
+import testStringReducer from './StringSlice';
 
-// Define the initial state
-const initialState: { value: string } = { value: '' };
-
-// Define the slice
-const testStringSlice = createSlice({
-  name: 'testStringValue',
-  initialState,
-  reducers: {
-    setTestString: (state, action: PayloadAction<string>) => {
-      state.value = action.payload;
-    },
+export const store = configureStore({
+  reducer: {
+    testString: testStringReducer,
   },
 });
 
-export const { setTestString } = testStringSlice.actions;
-
-export default testStringSlice.reducer;
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
