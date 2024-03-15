@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Header.css';
-
+import HeaderButton from '../HeaderButton';
 const Header = () => {
   const navigate = useNavigate();
   return (
@@ -18,18 +18,18 @@ const Header = () => {
         </Link>
       </div>
       <div className="flex space-x-4">
-        <button
-          className="px-4 py-2 font-semibold text-sm bg-blue-500 hover:bg-blue-700 text-white rounded-full shadow-sm transition-colors duration-300"
-          onClick={() => navigate('/register')}
-        >
-          Sign Up
-        </button>
-        <button
-          className="px-4 py-2 font-semibold text-sm bg-green-500 hover:bg-green-700 text-white rounded-full shadow-sm transition-colors duration-300"
-          onClick={() => navigate('/login')}
-        >
-          Sign In
-        </button>
+        <HeaderButton
+          text="Sign Up"
+          navigatePath="/register"
+          bgColor="bg-blue-500"
+          hoverColor="hover:bg-blue-700"
+        />
+        <HeaderButton
+          text="Sign In"
+          navigatePath="/login"
+          bgColor="bg-green-500"
+          hoverColor="hover:bg-green-700"
+        />
         {/* <Link className="hover:underline" to="/profile">
 						Profile
 					</Link> */}
