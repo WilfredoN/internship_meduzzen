@@ -10,30 +10,28 @@ const UserProfile = lazy(() => import('./Pages/User_Profile/UserProfile'));
 const Register = lazy(() => import('./Pages/Registration/Registration'));
 const Login = lazy(() => import('./Pages/Login/Login'));
 function App() {
-	const API_URL = process.env.REACT_APP_API_URL;
+  const API_URL = process.env.REACT_APP_API_URL;
 
-	return (
-		<BrowserRouter>
-			<div className="App">
-				<Header />
-				<Suspense
-					fallback={
-						<img src={logo} alt="logo" className="App-logo z-10" />
-					}
-				>
-					<Routes>
-						<Route path="/" element={<About />} />
-						<Route path="/about" element={<About />} />
-						<Route path="/users" element={<Users />} />
-						<Route path="/companies" element={<Companies />} />
-						<Route path="/profile" element={<UserProfile />} />
-						<Route path="/register" element={<Register />} />
-						<Route path="/login" element={<Login />} />
-					</Routes>
-				</Suspense>
-			</div>
-		</BrowserRouter>
-	);
+  return (
+    <BrowserRouter>
+      <div className="App">
+        <Header />
+        <Suspense
+          fallback={<img src={logo} alt="logo" className="App-logo z-10" />}
+        >
+          <Routes>
+            <Route path="/" element={<About />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/companies" element={<Companies />} />
+            <Route path="/profile" element={<UserProfile />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </Suspense>
+      </div>
+    </BrowserRouter>
+  );
 }
 
 export default App;
