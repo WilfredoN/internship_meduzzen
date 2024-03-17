@@ -1,29 +1,57 @@
-import React from 'react';
-import logo from './logo.svg';
+// Styling
 import './App.css';
+// Graphics
+import logo from './logo.svg';
+// Components
+import Header from './Components/Header/Header';
 
+// React
+import React, { Suspense, lazy, useState } from 'react';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+//Store
+import { RootState } from './Store/store';
+import { setStringValue } from './Store/StringSlice';
+
+//Pages
+const About = lazy(() => import('./Pages/About/About'));
+const Users = lazy(() => import('./Pages/Users/Users'));
+const Companies = lazy(() => import('./Pages/Companies/Companies'));
+const UserProfile = lazy(() => import('./Pages/User_Profile/UserProfile'));
+const Register = lazy(() => import('./Pages/Registration/Registration'));
+const Login = lazy(() => import('./Pages/Login/Login'));
 function App() {
-  const API_URL = process.env.REACT_APP_API_URL;
-  console.log('API_URL:', API_URL);
+  const dispatch = useDispatch();
+  const testString = useSelector((state: RootState) => state.testString.value);
+  const [input, setInput] = useState('');
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
+  };
+  const handleButtonClick = () => {
+    dispatch(setStringValue((Number(Math.random().toPrecision(1)) * 100).toString()));
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Hi!
-          <br />
-          This is Meduzzen internship project.
-        </p>
-        <a
-          className="App-link"
-          href={API_URL + 'docs#'}
-          target="_blank"
-          rel="noopener noreferrer"
+    <BrowserRouter>
+      <div className="App">
+        <Header />
+        <Suspense
+          fallback={<img src={logo} alt="logo" className="App-logo z-10" />}
         >
-          Learn more
-        </a>
-      </header>
-    </div>
+          <Routes>
+            <Route path="/" element={<About />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/companies" element={<Companies />} />
+            <Route path="/profile" element={<UserProfile />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </Suspense>
+        <p>Value: {testString} </p>
+        <button onClick={handleButtonClick}>Set Value</button>
+      </div>
+    </BrowserRouter>
   );
 }
 
