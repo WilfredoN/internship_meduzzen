@@ -1,28 +1,17 @@
 import React from 'react';
 
 interface TableHeaderProps {
-  type: 'user' | 'company';
+  headers: string[];
 }
 
-const TableHeader: React.FC<TableHeaderProps> = ({ type }) => (
+const TableHeader: React.FC<TableHeaderProps> = ({ headers }) => (
   <thead>
     <tr>
-      <th className="pl-4 pr-4">ID</th>
-      {type === 'user' ? (
-        <>
-          <th>Email</th>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Avatar</th>
-        </>
-      ) : (
-        <>
-          <th className="pr-4">Company Name</th>
-          <th className="pr-8 pl-8">Company Title</th>
-          <th className="pr-8 pl-8">Avatar</th>
-          <th className="pr-8 pl-8">Visible</th>
-        </>
-      )}
+      {headers.map((header, index) => (
+        <th key={index} className="pl-4 pr-4">
+          {header}
+        </th>
+      ))}
     </tr>
   </thead>
 );

@@ -12,7 +12,6 @@ const Companies = () => {
           company_avatar: 'https://via.placeholder.com/150',
           is_visible: true,
         }))}
-        type="company"
       />
     </div>
   );

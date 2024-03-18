@@ -12,7 +12,6 @@ const Users = () => {
           user_lastname: `User ${i + 1} Last Name`,
           user_avatar: 'https://via.placeholder.com/150',
         }))}
-        type="user"
       />
     </div>
   );
