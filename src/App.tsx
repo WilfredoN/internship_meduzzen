@@ -6,8 +6,8 @@ import logo from './logo.svg';
 import Header from './Components/Header/Header';
 
 // React
-import React, { Suspense, lazy, useState } from 'react';
-import { Provider, useDispatch, useSelector } from 'react-redux';
+import React, { Suspense, lazy } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 //Store
@@ -24,12 +24,10 @@ const Login = lazy(() => import('./Pages/Login/Login'));
 function App() {
   const dispatch = useDispatch();
   const testString = useSelector((state: RootState) => state.testString.value);
-  const [input, setInput] = useState('');
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(e.target.value);
-  };
   const handleButtonClick = () => {
-    dispatch(setStringValue((Number(Math.random().toPrecision(1)) * 100).toString()));
+    dispatch(
+      setStringValue((Number(Math.random().toPrecision(1)) * 100).toString()),
+    );
   };
   return (
     <BrowserRouter>
