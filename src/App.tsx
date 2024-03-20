@@ -1,8 +1,20 @@
-import React, { Suspense, lazy, useState } from 'react';
+// Styling
 import './App.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Header from './Components/Header/Header';
+// Graphics
 import logo from './logo.svg';
+// Components
+import Header from './Components/Header/Header';
+
+// React
+import React, { Suspense, lazy, useState } from 'react';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+//Store
+import { RootState } from './Store/store';
+import { setStringValue } from './Store/StringSlice';
+
+//Pages
 const About = lazy(() => import('./Pages/About/About'));
 const Users = lazy(() => import('./Pages/Users/Users'));
 const Companies = lazy(() => import('./Pages/Companies/Companies'));
@@ -10,6 +22,15 @@ const UserProfile = lazy(() => import('./Pages/User_Profile/UserProfile'));
 const Register = lazy(() => import('./Pages/Registration/Registration'));
 const Login = lazy(() => import('./Pages/Login/Login'));
 function App() {
+  const dispatch = useDispatch();
+  const testString = useSelector((state: RootState) => state.testString.value);
+  const [input, setInput] = useState('');
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
+  };
+  const handleButtonClick = () => {
+    dispatch(setStringValue((Number(Math.random().toPrecision(1)) * 100).toString()));
+  };
   return (
     <BrowserRouter>
       <div className="App">
@@ -27,6 +48,8 @@ function App() {
             <Route path="/login" element={<Login />} />
           </Routes>
         </Suspense>
+        <p>Value: {testString} </p>
+        <button onClick={handleButtonClick}>Set Value</button>
       </div>
     </BrowserRouter>
   );
