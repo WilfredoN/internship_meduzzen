@@ -1,27 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import './Header.css';
 import HeaderButton from '../HeaderButton';
+import instance from '../../Api/api';
 
 const Header = () => {
-  const [responseMessage, setResponseMessage] = useState(<p>Loading...</p>);
+  const [data, setData] = React.useState([]);
+  React.useEffect(() => {
+    const healthCheck = async () => {
+      try {
+        const response = await instance.get('/');
+        setData(response.data.status_code);
+        console.log(response);
+      } catch (error) {
+        console.error('Error fetching data', error);
+      }
+    };
 
-  useEffect(() => {
-    axios
-      .get('http://35.157.234.188/')
-      .then((response) => {
-        if (response.status === 200) {
-          setResponseMessage(
-            <p className="text-green-600">{response.status}</p>,
-          );
-        } else {
-          setResponseMessage(<p className="text-red">{response.status}</p>);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    healthCheck();
   }, []);
   return (
     <nav className="header flex flex-row justify-between items-center space-x-4 p-12 mt-6 mb-16 bg-gray-800 text-white rounded-full h-16 max-w-screen-lg w-full">
@@ -36,7 +32,7 @@ const Header = () => {
           Companies
         </Link>
       </div>
-      {responseMessage}
+      <h1 className="text-3xl font-bold text-green-600">{data}</h1>
       <div className="flex space-x-4">
         <HeaderButton
           text="Sign Up"
