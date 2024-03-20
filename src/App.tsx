@@ -1,29 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Suspense, lazy, useState } from 'react';
 import './App.css';
-
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Header from './Components/Header/Header';
+import logo from './logo.svg';
+const About = lazy(() => import('./Pages/About/About'));
+const Users = lazy(() => import('./Pages/Users/Users'));
+const Companies = lazy(() => import('./Pages/Companies/Companies'));
+const UserProfile = lazy(() => import('./Pages/User_Profile/UserProfile'));
+const Register = lazy(() => import('./Pages/Registration/Registration'));
+const Login = lazy(() => import('./Pages/Login/Login'));
 function App() {
-  const API_URL = process.env.REACT_APP_API_URL;
-  console.log('API_URL:', API_URL);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Hi!
-          <br />
-          This is Meduzzen internship project.
-        </p>
-        <a
-          className="App-link"
-          href={API_URL + 'docs#'}
-          target="_blank"
-          rel="noopener noreferrer"
+    <BrowserRouter>
+      <div className="App">
+        <Header />
+        <Suspense
+          fallback={<img src={logo} alt="logo" className="App-logo z-10" />}
         >
-          Learn more
-        </a>
-      </header>
-    </div>
+          <Routes>
+            <Route path="/" element={<About />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/companies" element={<Companies />} />
+            <Route path="/profile" element={<UserProfile />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </Suspense>
+      </div>
+    </BrowserRouter>
   );
 }
 
