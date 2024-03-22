@@ -14,6 +14,7 @@ const Header = () => {
     user: User | null;
     isAuth: boolean;
   };
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const dispatch = useDispatch();
 
   const logout = () => {
@@ -21,7 +22,9 @@ const Header = () => {
     localStorage.removeItem('user');
     store.dispatch(resetUser());
   };
-
+  useEffect(() => {
+    setIsLoggedIn(isAuth);
+  }, [isAuth]);
   useEffect(() => {
     const healthCheck = async () => {
       try {
@@ -51,10 +54,10 @@ const Header = () => {
       <h1 className="text-3xl font-bold text-green-600">{data}</h1>
       <div className="flex space-x-4">
         <div>
-          {user ? (
+          {isLoggedIn ? (
             <div className="flex flex-row justify-center items-center">
               <span>
-                {user.user_firstname} {user.user_lastname}
+                {user?.user_firstname} {user?.user_lastname}
               </span>
               <Link className="mx-6 hover:underline" to="/profile">
                 Profile

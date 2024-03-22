@@ -1,15 +1,34 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import User from '../../Types/User';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../Store/store';
+import store, { RootState } from '../../Store/store';
+import { useNavigate } from 'react-router-dom';
+import { getUser } from '../../Api/user';
+import { setUser } from '../../Store/userSlice';
 
 const UserProfile: React.FC = () => {
-  const { user, isAuth } = useSelector((state: RootState) => state.user) as {
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!localStorage.getItem('access_token')) return;
+      try {
+        const response = await getUser();
+        store.dispatch(setUser(response));
+        localStorage.setItem('user', JSON.stringify(response));
+      } catch (error) {
+        console.error('Error fetching data', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+  const { user } = useSelector((state: RootState) => state.user) as {
     user: User | null;
-    isAuth: boolean;
   };
-  console.log(user);
+  const navigate = useNavigate();
   if (!user) {
+    if (!localStorage.getItem('access_token')) {
+      navigate('/login');
+    }
     return <div>Loading...</div>;
   }
 

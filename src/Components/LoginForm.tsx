@@ -9,15 +9,16 @@ const LoginForm = () => {
   const [isEmailValid, setIsEmailValid] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!isEmailValid) {
       console.log('Invalid email format');
       return;
     }
-    login(userEmail, userPassword);
+    await login(userEmail, userPassword);
     if (localStorage.getItem('access_token')) {
       dispatch(setIsAuth(true));
       navigate('/');
+      console.log('Login successful');
     }
   };
 
