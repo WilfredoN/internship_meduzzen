@@ -30,17 +30,7 @@ const Header = () => {
         setData('Error');
       }
     };
-    const fetchData = async () => {
-      if (!localStorage.getItem('access_token')) return;
-      try {
-        const response = (await getUser()) as User;
-        store.dispatch(setUser(response));
-      } catch (error) {
-        console.error('Error fetching data', error);
-      }
-    };
 
-    fetchData();
     healthCheck();
   }, [dispatch]);
   return (
