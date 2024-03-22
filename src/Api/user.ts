@@ -5,13 +5,17 @@ const apiUrl = process.env.REACT_APP_API_URL;
 // Create instance for /auth/login/
 export const login = async (user_email: string, user_password: string) => {
     try {
-        const response = await axios.post(`${apiUrl}/auth/login/`, {
+        const response = await axios.post(`${apiUrl}auth/login/`, {
             user_email,
             user_password
         });
+        console.log(response);
         return response.data;
-    } catch (error) {
-        throw new Error(error as string);
+    } catch (error: any) {
+        if (error.response && error.response.status === 404) {
+            return { error: 'Login endpoint not found' };
+        }
+        return { error: error.message || 'Unknown error' };
     }
 };
 
@@ -24,9 +28,14 @@ export const createUser = async (userData: {
     user_lastname: string;
 }) => {
     try {
-        const response = await axios.post(`${apiUrl}/user/`, userData);
+        const response = await axios.post(`${apiUrl}user/`, userData);
+        console.log(response);
         return response.data;
-    } catch (error) {
-        throw new Error(error as string);
+    } catch (error: any) {
+        if (error.response && error.response.status === 404) {
+            console.log(error);
+            return { error: 'User creation endpoint not found' };
+        }
+        return { error: error.message || 'Unknown error' };
     }
 };
