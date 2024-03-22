@@ -10,6 +10,7 @@ export const login = async (user_email: string, user_password: string) => {
             user_password
         });
         console.log(response);
+        localStorage.setItem('access_token', response.data.result.access_token);
         return response.data;
     } catch (error: any) {
         if (error.response && error.response.status === 404) {
