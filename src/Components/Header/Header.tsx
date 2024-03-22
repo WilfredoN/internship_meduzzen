@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import './Header.css';
 import HeaderButton from '../HeaderButton';
 import instance from '../../Api/api';
-import { resetUser, setUser } from '../../Store/userSlice';
+import { resetUser } from '../../Store/userSlice';
 import store, { RootState } from '../../Store/store';
-import { getUser } from '../../Api/user';
 import User from '../../Types/User';
-import { log } from 'console';
 const Header = () => {
   const [data, setData] = useState('');
   const user = useSelector((state: RootState) => state.user) as User | null;
@@ -50,21 +48,21 @@ const Header = () => {
       <div className="flex space-x-4">
         <div>
           {user ? (
-            <div>
+            <div className="flex flex-row justify-center items-center">
               <span>
                 {user.user_firstname} {user.user_lastname}
               </span>
+              <Link className="mx-6 hover:underline" to="/profile">
+                Profile
+              </Link>
               <button
-                className="ml-6 hover:underline"
+                className="ml-6 mr-0 text-xl bg-slate-600 p-2 rounded-full hover:bg-red-800 transition-colors duration-300 ease-in-out"
                 onClick={() => {
                   logout();
                 }}
               >
                 Logout
               </button>
-              <Link className="hover:underline" to="/profile">
-                Profile
-              </Link>
             </div>
           ) : (
             <>

@@ -7,11 +7,9 @@ import Header from './Components/Header/Header';
 
 // React
 import React, { Suspense, lazy, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { getUser } from './Api/user';
 import store from './Store/store';
-import User from './Types/User';
 import { setUser } from './Store/userSlice';
 
 //Pages
@@ -27,8 +25,9 @@ function App() {
     const fetchData = async () => {
       if (!localStorage.getItem('access_token')) return;
       try {
-        const response = (await getUser()) as User;
+        const response = await getUser();
         store.dispatch(setUser(response));
+        localStorage.setItem('user', JSON.stringify(response));
       } catch (error) {
         console.error('Error fetching data', error);
       }

@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import { resetUser } from '../Store/userSlice';
 const apiUrl = process.env.REACT_APP_API_URL;
 
 // Create instance for /auth/login/
@@ -43,6 +43,7 @@ export const createUser = async (userData: {
 
 // Instance for /auth/me/
 export const getUser = async () => {
+    console.log(localStorage.getItem('access_token'));
     try {
         const response = await axios.get(`${apiUrl}auth/me/`, {
             headers: {
@@ -52,9 +53,10 @@ export const getUser = async () => {
         console.log(response.data.result);
         return response.data.result;
     } catch (error: any) {
-        if (error.response && error.response.status === 404) {
-            return { error: 'User not found' };
+        if (error.response && error.response.status === 401) {
+            localStorage.removeItem('access_token');
+            resetUser();
         }
-        return { error: error.message || 'Unknown error' };
+        return { error: error.message };
     }
 };

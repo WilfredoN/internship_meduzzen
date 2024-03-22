@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { login } from '../Api/user';
-
+import { useNavigate } from 'react-router-dom';
 const LoginForm = () => {
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(true);
-
+  const navigate = useNavigate();
   const handleLogin = () => {
     if (!isEmailValid) {
       console.log('Invalid email format');
       return;
     }
     login(userEmail, userPassword);
+    if (localStorage.getItem('access_token')) {
+      navigate('/');
+    }
   };
 
   const validateEmail = (email: string) => {
