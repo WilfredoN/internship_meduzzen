@@ -40,3 +40,21 @@ export const createUser = async (userData: {
         return { error: error.message || 'Unknown error' };
     }
 };
+
+// Instance for /auth/me/
+export const getUser = async () => {
+    try {
+        const response = await axios.get(`${apiUrl}auth/me/`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('access_token')}`
+            }
+        });
+        console.log(response.data.result);
+        return response.data.result;
+    } catch (error: any) {
+        if (error.response && error.response.status === 404) {
+            return { error: 'User not found' };
+        }
+        return { error: error.message || 'Unknown error' };
+    }
+};

@@ -6,11 +6,9 @@ import logo from './logo.svg';
 import Header from './Components/Header/Header';
 
 // React
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
-//Store
 
 //Pages
 const About = lazy(() => import('./Pages/About/About'));
@@ -19,8 +17,8 @@ const Companies = lazy(() => import('./Pages/Companies/Companies'));
 const UserProfile = lazy(() => import('./Pages/User_Profile/UserProfile'));
 const Register = lazy(() => import('./Pages/Registration/Registration'));
 const Login = lazy(() => import('./Pages/Login/Login'));
+
 function App() {
-  console.log('access token = ' + localStorage.getItem('access_token'));
   return (
     <BrowserRouter>
       <div className="App">

@@ -16,7 +16,7 @@ const HeaderButton: React.FC<CustomButtonProps> = ({
   const navigate = useNavigate();
   return (
     <button
-      className={`px-4 py-2 font-semibold text-sm ${bgColor} ${hoverColor} text-white rounded-full shadow-sm transition-colors duration-300`}
+      className={`px-6 py-4 ml-2 font-semibold text-sm ${bgColor} ${hoverColor} text-white rounded-full shadow-sm transition-colors duration-300`}
       onClick={() => navigate(navigatePath)}
     >
       {text}
