@@ -20,7 +20,11 @@ const UserProfile: React.FC = () => {
         {Object.entries(user).map(([key, value]) => (
           <div key={key}>
             <strong>{key}:</strong>{' '}
-            {value !== null && value !== undefined ? value : 'N/A'}
+            {typeof value === 'boolean'
+              ? value.toString()
+              : value !== null && value !== undefined
+                ? value
+                : 'N/A'}
           </div>
         ))}
       </div>
