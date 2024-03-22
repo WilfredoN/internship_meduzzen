@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { createUser } from '../Api/user';
+import { createUser } from '../../Api/user';
+import { SignUpButton } from '../Buttons/SighUpButton';
 const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
 const RegistrationForm = () => {
@@ -88,12 +89,15 @@ const RegistrationForm = () => {
           }}
         ></div>
       </div>
-      <button
-        onClick={handleRegistration}
-        className="w-1/2 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition-all duration-200 ease-in-out mt-4"
-      >
-        Register
-      </button>
+      <div className="flex flex-row items-center justify-center mt-6">
+        <button
+          onClick={handleRegistration}
+          className="w-1/2 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition-all duration-200 ease-in-out"
+        >
+          Register
+        </button>
+        <SignUpButton />
+      </div>
     </div>
   );
 };

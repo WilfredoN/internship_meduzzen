@@ -43,14 +43,14 @@ export const createUser = async (userData: {
 
 // Instance for /auth/me/
 export const getUser = async () => {
-    console.log(localStorage.getItem('access_token'));
+    // console.log(localStorage.getItem('access_token'));
     try {
         const response = await axios.get(`${apiUrl}auth/me/`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('access_token')}`
             }
         });
-        console.log(response.data.result);
+        // console.log(response.data.result);
         return response.data.result;
     } catch (error: any) {
         if (error.response && error.response.status === 401) {

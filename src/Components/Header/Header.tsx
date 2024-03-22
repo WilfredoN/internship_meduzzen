@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { useAuth0 } from '@auth0/auth0-react';
 import { useSelector } from 'react-redux';
 import './Header.css';
-import HeaderButton from '../HeaderButton';
+import HeaderButton from '../Buttons/HeaderButton';
 import instance from '../../Api/api';
 import { resetUser } from '../../Store/userSlice';
 import store, { RootState } from '../../Store/store';
@@ -16,15 +17,16 @@ const Header = () => {
   };
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const dispatch = useDispatch();
-
-  const logout = () => {
+  const { user: auth0User, isAuthenticated, logout } = useAuth0();
+  const handleLogout = () => {
+    logout({ logoutParams: { returnTo: window.location.origin } });
     localStorage.removeItem('access_token');
     localStorage.removeItem('user');
     store.dispatch(resetUser());
   };
   useEffect(() => {
-    setIsLoggedIn(isAuth);
-  }, [isAuth]);
+    setIsLoggedIn(isAuth || isAuthenticated);
+  }, [isAuth, isAuthenticated]);
   useEffect(() => {
     const healthCheck = async () => {
       try {
@@ -65,7 +67,7 @@ const Header = () => {
               <button
                 className="ml-6 mr-0 text-xl bg-slate-600 p-2 rounded-full hover:bg-red-800 transition-colors duration-300 ease-in-out"
                 onClick={() => {
-                  logout();
+                  handleLogout();
                 }}
               >
                 Logout

@@ -6,7 +6,7 @@ import logo from './logo.svg';
 import Header from './Components/Header/Header';
 
 // React
-import React, { Suspense, lazy, useEffect } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { getUser } from './Api/user';
 import store from './Store/store';
@@ -19,6 +19,7 @@ const Companies = lazy(() => import('./Pages/Companies/Companies'));
 const UserProfile = lazy(() => import('./Pages/User_Profile/UserProfile'));
 const Register = lazy(() => import('./Pages/Registration/Registration'));
 const Login = lazy(() => import('./Pages/Login/Login'));
+const Callback = lazy(() => import('./Pages/Callback'));
 
 function App() {
   useEffect(() => {
@@ -36,24 +37,23 @@ function App() {
     fetchData();
   }, []);
   return (
-    <BrowserRouter>
-      <div className="App">
-        <Header />
-        <Suspense
-          fallback={<img src={logo} alt="logo" className="App-logo z-10" />}
-        >
-          <Routes>
-            <Route path="/" element={<About />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/companies" element={<Companies />} />
-            <Route path="/profile" element={<UserProfile />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
-          </Routes>
-        </Suspense>
-      </div>
-    </BrowserRouter>
+    <div className="App">
+      <Header />
+      <Suspense
+        fallback={<img src={logo} alt="logo" className="App-logo z-10" />}
+      >
+        <Routes>
+          <Route path="/" element={<About />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/companies" element={<Companies />} />
+          <Route path="/profile" element={<UserProfile />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/callback" element={<Callback />} />
+        </Routes>
+      </Suspense>
+    </div>
   );
 }
 
