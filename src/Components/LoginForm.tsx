@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { login } from '../Api/user';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setIsAuth } from '../Store/userSlice';
 const LoginForm = () => {
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(true);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const handleLogin = () => {
     if (!isEmailValid) {
       console.log('Invalid email format');
@@ -13,6 +16,7 @@ const LoginForm = () => {
     }
     login(userEmail, userPassword);
     if (localStorage.getItem('access_token')) {
+      dispatch(setIsAuth(true));
       navigate('/');
     }
   };

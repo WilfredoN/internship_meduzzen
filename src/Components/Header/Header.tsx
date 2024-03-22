@@ -10,11 +10,15 @@ import store, { RootState } from '../../Store/store';
 import User from '../../Types/User';
 const Header = () => {
   const [data, setData] = useState('');
-  const user = useSelector((state: RootState) => state.user) as User | null;
+  const { user, isAuth } = useSelector((state: RootState) => state.user) as {
+    user: User | null;
+    isAuth: boolean;
+  };
   const dispatch = useDispatch();
 
   const logout = () => {
     localStorage.removeItem('access_token');
+    localStorage.removeItem('user');
     store.dispatch(resetUser());
   };
 
