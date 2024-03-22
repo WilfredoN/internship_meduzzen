@@ -20,6 +20,7 @@ const UserProfile = lazy(() => import('./Pages/User_Profile/UserProfile'));
 const Register = lazy(() => import('./Pages/Registration/Registration'));
 const Login = lazy(() => import('./Pages/Login/Login'));
 function App() {
+  console.log('access token = ' + localStorage.getItem('access_token'));
   return (
     <BrowserRouter>
       <div className="App">
