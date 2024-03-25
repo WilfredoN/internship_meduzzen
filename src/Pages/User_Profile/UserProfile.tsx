@@ -35,7 +35,7 @@ const UserProfile: React.FC = () => {
       }
     };
     successfulLogin();
-  }, [user]);
+  }, [user, navigate]);
 
   return (
     <div className="w-1/2 h-full flex flex-row items-center space-y-4 bg-slate-600 rounded-2xl">

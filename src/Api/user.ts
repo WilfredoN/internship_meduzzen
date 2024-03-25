@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { resetUser } from '../Store/userSlice';
 const apiUrl = process.env.REACT_APP_API_URL;
 
 // Create instance for /auth/login/
@@ -41,7 +40,7 @@ export const createUser = async (userData: {
 // Instance for /auth/me/
 export const getUser = async () => {
     const token = localStorage.getItem('access_token');
-    console.log(token);
+    // console.log(token);
     try {
         const response = await axios.get(`${apiUrl}auth/me/`, {
             headers: {

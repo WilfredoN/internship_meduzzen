@@ -17,7 +17,7 @@ const Header = () => {
   };
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const dispatch = useDispatch();
-  const { user: auth0User, isAuthenticated, logout } = useAuth0();
+  const { isAuthenticated, logout } = useAuth0();
   const handleLogout = () => {
     logout({ logoutParams: { returnTo: window.location.origin } });
     localStorage.removeItem('access_token');

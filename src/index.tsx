@@ -5,7 +5,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import store from './Store/store';
-import { BrowserRouter, redirect } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { Auth0Provider } from '@auth0/auth0-react';
 //import dotenv from 'dotenv';
 

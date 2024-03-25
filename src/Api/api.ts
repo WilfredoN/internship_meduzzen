@@ -16,4 +16,6 @@ const healthCheck = async () => {
         return { error: error.message || 'Unknown error' };
     }
 }
-export default { instance, healthCheck };
+
+const api = { instance, healthCheck };
+export default api;

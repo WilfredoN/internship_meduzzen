@@ -7,9 +7,8 @@ import Header from './Components/Header/Header';
 
 // React
 import { Suspense, lazy, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { createUser, getUser } from './Api/user';
-import store from './Store/store';
 import { setIsAuth, setUser } from './Store/userSlice';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useDispatch } from 'react-redux';
@@ -21,7 +20,6 @@ const Companies = lazy(() => import('./Pages/Companies/Companies'));
 const UserProfile = lazy(() => import('./Pages/User_Profile/UserProfile'));
 const Register = lazy(() => import('./Pages/Registration/Registration'));
 const Login = lazy(() => import('./Pages/Login/Login'));
-const Callback = lazy(() => import('./Pages/Callback'));
 
 function App() {
   const dispatch = useDispatch();
@@ -33,7 +31,7 @@ function App() {
         const token = await getAccessTokenSilently();
         localStorage.setItem('access_token', token);
         const user = await getUser();
-        console.log(user);
+        // console.log(user);
         if (user) {
           dispatch(setUser(user));
           dispatch(setIsAuth(true));
@@ -68,7 +66,6 @@ function App() {
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/callback" element={<Callback />} />
         </Routes>
       </Suspense>
     </div>
