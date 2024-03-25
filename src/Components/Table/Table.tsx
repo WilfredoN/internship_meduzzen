@@ -49,9 +49,11 @@ const Table: React.FC<TableProps> = ({ data }) => {
   return (
     <table>
       <TableHeader headers={headers} />
-      {rows.map((row, index) => (
-        <Row key={index} item={row} />
-      ))}
+      <tbody>
+        {rows.map((row, index) => (
+          <Row key={index} item={row} />
+        ))}
+      </tbody>
     </table>
   );
 };

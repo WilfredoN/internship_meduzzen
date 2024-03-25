@@ -6,13 +6,11 @@ import logo from './logo.svg';
 import Header from './Components/Header/Header';
 
 // React
-import React, { Suspense, lazy } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
-//Store
-import { RootState } from './Store/store';
-import { setStringValue } from './Store/StringSlice';
+import { getUser } from './Api/user';
+import store from './Store/store';
+import { setUser } from './Store/userSlice';
 
 //Pages
 const About = lazy(() => import('./Pages/About/About'));
@@ -21,35 +19,41 @@ const Companies = lazy(() => import('./Pages/Companies/Companies'));
 const UserProfile = lazy(() => import('./Pages/User_Profile/UserProfile'));
 const Register = lazy(() => import('./Pages/Registration/Registration'));
 const Login = lazy(() => import('./Pages/Login/Login'));
+const Callback = lazy(() => import('./Pages/Callback'));
+
 function App() {
-  const dispatch = useDispatch();
-  const testString = useSelector((state: RootState) => state.testString.value);
-  const handleButtonClick = () => {
-    dispatch(
-      setStringValue((Number(Math.random().toPrecision(1)) * 100).toString()),
-    );
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!localStorage.getItem('access_token')) return;
+      try {
+        const response = await getUser();
+        store.dispatch(setUser(response));
+        localStorage.setItem('user', JSON.stringify(response));
+      } catch (error) {
+        console.error('Error fetching data', error);
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
-    <BrowserRouter>
-      <div className="App">
-        <Header />
-        <Suspense
-          fallback={<img src={logo} alt="logo" className="App-logo z-10" />}
-        >
-          <Routes>
-            <Route path="/" element={<About />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/companies" element={<Companies />} />
-            <Route path="/profile" element={<UserProfile />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
-          </Routes>
-        </Suspense>
-        <p>Value: {testString} </p>
-        <button onClick={handleButtonClick}>Set Value</button>
-      </div>
-    </BrowserRouter>
+    <div className="App">
+      <Header />
+      <Suspense
+        fallback={<img src={logo} alt="logo" className="App-logo z-10" />}
+      >
+        <Routes>
+          <Route path="/" element={<About />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/companies" element={<Companies />} />
+          <Route path="/profile" element={<UserProfile />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/callback" element={<Callback />} />
+        </Routes>
+      </Suspense>
+    </div>
   );
 }
 
