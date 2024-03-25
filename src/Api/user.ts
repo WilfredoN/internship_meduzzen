@@ -27,36 +27,30 @@ export const createUser = async (userData: {
     user_email: string;
     user_firstname: string;
     user_lastname: string;
+    user_avatar?: string;
 }) => {
     try {
         const response = await axios.post(`${apiUrl}user/`, userData);
         console.log(response);
         return response.data;
     } catch (error: any) {
-        if (error.response && error.response.status === 404) {
-            console.log(error);
-            return { error: 'Endpoint not found' };
-        }
-        return { error: error.message || 'Unknown error' };
+        console.log(error);
     }
 };
 
 // Instance for /auth/me/
 export const getUser = async () => {
-    // console.log(localStorage.getItem('access_token'));
+    const token = localStorage.getItem('access_token');
+    console.log(token);
     try {
         const response = await axios.get(`${apiUrl}auth/me/`, {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem('access_token')}`
+                Authorization: `Bearer ${token}`
             }
         });
         // console.log(response.data.result);
         return response.data.result;
     } catch (error: any) {
-        if (error.response && error.response.status === 401) {
-            localStorage.removeItem('access_token');
-            resetUser();
-        }
         return { error: error.message };
     }
 };

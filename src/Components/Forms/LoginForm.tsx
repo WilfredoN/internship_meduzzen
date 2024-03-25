@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { login } from '../../Api/user';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setIsAuth } from '../../Store/userSlice';
-import { LoginButton } from '../Buttons/LoginButton';
+import { Auth0 } from '../Buttons/Auth0';
 const LoginForm = () => {
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(true);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleLogin = async () => {
@@ -18,7 +19,7 @@ const LoginForm = () => {
     await login(userEmail, userPassword);
     if (localStorage.getItem('access_token')) {
       dispatch(setIsAuth(true));
-      navigate('/');
+      navigate('/profile');
       console.log('Login successful');
     }
   };
@@ -60,7 +61,7 @@ const LoginForm = () => {
         >
           Login
         </button>
-        <LoginButton />
+        <Auth0 />
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createUser } from '../../Api/user';
-import { SignUpButton } from '../Buttons/SighUpButton';
+import { Auth0 } from '../Buttons/Auth0';
 const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
 const RegistrationForm = () => {
@@ -96,7 +96,7 @@ const RegistrationForm = () => {
         >
           Register
         </button>
-        <SignUpButton />
+        <Auth0 />
       </div>
     </div>
   );

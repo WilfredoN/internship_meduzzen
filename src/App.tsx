@@ -7,10 +7,12 @@ import Header from './Components/Header/Header';
 
 // React
 import { Suspense, lazy, useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { getUser } from './Api/user';
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import { createUser, getUser } from './Api/user';
 import store from './Store/store';
-import { setUser } from './Store/userSlice';
+import { setIsAuth, setUser } from './Store/userSlice';
+import { useAuth0 } from '@auth0/auth0-react';
+import { useDispatch } from 'react-redux';
 
 //Pages
 const About = lazy(() => import('./Pages/About/About'));
@@ -22,20 +24,36 @@ const Login = lazy(() => import('./Pages/Login/Login'));
 const Callback = lazy(() => import('./Pages/Callback'));
 
 function App() {
+  const dispatch = useDispatch();
+  const { user, getAccessTokenSilently, isAuthenticated } = useAuth0();
+  const navigate = useNavigate();
   useEffect(() => {
-    const fetchData = async () => {
-      if (!localStorage.getItem('access_token')) return;
-      try {
-        const response = await getUser();
-        store.dispatch(setUser(response));
-        localStorage.setItem('user', JSON.stringify(response));
-      } catch (error) {
-        console.error('Error fetching data', error);
+    const checkAuth = async () => {
+      if (isAuthenticated) {
+        const token = await getAccessTokenSilently();
+        localStorage.setItem('access_token', token);
+        const user = await getUser();
+        console.log(user);
+        if (user) {
+          dispatch(setUser(user));
+          dispatch(setIsAuth(true));
+        } else {
+          const newUser = await createUser({
+            user_email: user.email,
+            user_firstname: user.given_name,
+            user_lastname: user.family_name,
+            user_avatar: user.picture,
+            user_password: '',
+            user_password_repeat: '',
+          });
+          dispatch(setUser(newUser));
+          dispatch(setIsAuth(true));
+        }
       }
     };
+    checkAuth();
+  }, [isAuthenticated, user, getAccessTokenSilently, dispatch, navigate]);
 
-    fetchData();
-  }, []);
   return (
     <div className="App">
       <Header />
