@@ -6,12 +6,14 @@ import logo from './logo.svg';
 import Header from './Components/Header/Header';
 
 // React
-import { Suspense, lazy, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
-import { getUser } from './Api/user';
-import { setIsAuth, setUser } from './Store/userSlice';
 import { useAuth0 } from '@auth0/auth0-react';
+import { Suspense, lazy, useEffect } from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import { getUser } from './Api/user';
+import PrivateRoutes from './Components/Routes/PrivateRoutes';
+import { useAppSelector } from './Store/hooks';
 import { useAppDispatch } from './Store/store';
+import { setIsAuth, setLoading, setUser } from './Store/userSlice';
 
 //Pages
 const About = lazy(() => import('./Pages/About/About'));
@@ -22,29 +24,27 @@ const Register = lazy(() => import('./Pages/Registration/Registration'));
 const Login = lazy(() => import('./Pages/Login/Login'));
 
 function App() {
+  const user = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
-  const { getAccessTokenSilently, isLoading } = useAuth0();
   useEffect(() => {
-    const fetchUser = async () => {
+    if (user.isAuth) {
+      return;
+    }
+
+    const fetchUserData = async () => {
       try {
-        const user = await getUser();
-        dispatch(setUser(user));
+        const userData = await getUser();
+        dispatch(setUser(userData));
         dispatch(setIsAuth(true));
-        console.log('User fetched:', user);
+        dispatch(setLoading(false));
       } catch (error) {
-        console.error('Error fetching user:', error);
+        dispatch(setLoading(false));
+        console.log('Error fetching user', error);
       }
     };
 
-    if (!isLoading) {
-      const token =
-        localStorage.getItem('access_token') ||
-        getAccessTokenSilently() ||
-        null;
-      console.log('Token:', token, 'Is loading:', isLoading);
-      fetchUser();
-    }
-  }, [dispatch, getAccessTokenSilently, isLoading]);
+    fetchUserData();
+  }, [user.isAuth, dispatch]);
 
   return (
     <div className="App">
@@ -53,11 +53,12 @@ function App() {
         fallback={<img src={logo} alt="logo" className="App-logo z-10" />}
       >
         <Routes>
+          <Route element={<PrivateRoutes />}>
+            <Route path="/users" element={<Users />} />
+            <Route path="/companies" element={<Companies />} />
+            <Route path="/profile" element={<UserProfile />} />
+          </Route>
           <Route path="/" element={<About />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/companies" element={<Companies />} />
-          <Route path="/profile" element={<UserProfile />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
         </Routes>

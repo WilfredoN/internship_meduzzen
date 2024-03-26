@@ -5,24 +5,34 @@ import { useSelector } from 'react-redux';
 import './Header.css';
 import HeaderButton from '../Buttons/HeaderButton';
 import instance from '../../Api/api';
-import { resetUser } from '../../Store/userSlice';
+import { resetUser, setUser } from '../../Store/userSlice';
 import User from '../../Types/User';
-import store, { useAppDispatch } from '../../Store/store';
+import store from '../../Store/store';
+import { useAppSelector } from '../../Store/hooks';
+import { getUser } from '../../Api/user';
 const Header = () => {
   const [data, setData] = useState('');
-  const { user, isAuth } = useSelector(
-    (state: { user: { user: User; isAuth: boolean } }) => {
-      return state.user;
-    },
-  );
-  const dispatch = useAppDispatch();
-  const { isAuthenticated, logout } = useAuth0();
+  const user = useAppSelector((state) => state.user.user as User | null);
+  const isAuth = useAppSelector((state) => state.user.isAuth);
+  const { isAuthenticated, logout, isLoading } = useAuth0();
   const handleLogout = () => {
     logout({ logoutParams: { returnTo: window.location.origin } });
     localStorage.removeItem('access_token');
     localStorage.removeItem('user');
     store.dispatch(resetUser());
   };
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await getUser();
+        store.dispatch(setUser(response));
+      } catch (error) {
+        console.error('Error fetching user', error);
+      }
+    };
+    if (isAuthenticated && !isLoading) fetchUser();
+  }, [isAuthenticated]);
   useEffect(() => {
     const healthCheck = async () => {
       try {
@@ -34,11 +44,11 @@ const Header = () => {
       }
     };
     healthCheck();
-  }, [dispatch]);
+  });
   return (
     <nav className="header flex flex-row justify-between items-center space-x-4 p-12 mt-6 mb-16 bg-gray-800 text-white rounded-full h-16 max-w-screen-lg w-full">
       <div className="flex space-x-4">
-        <Link className="hover:underline" to="/about">
+        <Link className="hover:underline" to="/">
           About
         </Link>
         <Link className="hover:underline" to="/users">
@@ -65,6 +75,8 @@ const Header = () => {
               Logout
             </button>
           </div>
+        ) : isLoading ? (
+          <div>Loading...</div>
         ) : (
           <>
             <HeaderButton

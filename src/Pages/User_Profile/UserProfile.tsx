@@ -1,41 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import { useAppSelector } from '../../Store/hooks';
 import User from '../../Types/User';
-import { useSelector } from 'react-redux';
-import store from '../../Store/store';
-import { useNavigate } from 'react-router-dom';
-import { getUser } from '../../Api/user';
-import { setUser } from '../../Store/userSlice';
 
 const UserProfile: React.FC = () => {
-  const { user } = useSelector((state: { user: { user: User } }) => {
-    return state.user;
-  });
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!localStorage.getItem('access_token')) return;
-      try {
-        const response = await getUser();
-        store.dispatch(setUser(response));
-        localStorage.setItem('user', JSON.stringify(response));
-      } catch (error) {
-        console.error('Error fetching data', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-  const navigate = useNavigate();
-  useEffect(() => {
-    const successfulLogin = async () => {
-      if (!user) {
-        if (!localStorage.getItem('access_token')) {
-          navigate('/login');
-        }
-        return <div>Loading...</div>;
-      }
-    };
-    successfulLogin();
-  }, [user, navigate]);
+  const user = useAppSelector(
+    (state: { user: { user: User | null; isAuth: boolean } }) =>
+      state.user.user,
+  );
 
   return (
     <div className="w-1/2 h-full flex flex-row items-center space-y-4 bg-slate-600 rounded-2xl">

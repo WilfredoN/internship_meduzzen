@@ -47,7 +47,7 @@ export const getUser = async () => {
                 Authorization: `Bearer ${token}`
             }
         });
-        // console.log(response.data.result);
+        console.log(response.data.result);
         return response.data.result;
     } catch (error: any) {
         return { error: error.message };
