@@ -1,22 +1,21 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useSelector } from 'react-redux';
 import './Header.css';
 import HeaderButton from '../Buttons/HeaderButton';
 import instance from '../../Api/api';
 import { resetUser } from '../../Store/userSlice';
-import store, { RootState } from '../../Store/store';
 import User from '../../Types/User';
+import store, { useAppDispatch } from '../../Store/store';
 const Header = () => {
   const [data, setData] = useState('');
-  const { user, isAuth } = useSelector((state: RootState) => state.user) as {
-    user: User | null;
-    isAuth: boolean;
-  };
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const dispatch = useDispatch();
+  const { user, isAuth } = useSelector(
+    (state: { user: { user: User; isAuth: boolean } }) => {
+      return state.user;
+    },
+  );
+  const dispatch = useAppDispatch();
   const { isAuthenticated, logout } = useAuth0();
   const handleLogout = () => {
     logout({ logoutParams: { returnTo: window.location.origin } });
@@ -24,9 +23,6 @@ const Header = () => {
     localStorage.removeItem('user');
     store.dispatch(resetUser());
   };
-  useEffect(() => {
-    setIsLoggedIn(isAuth || isAuthenticated);
-  }, [isAuth, isAuthenticated]);
   useEffect(() => {
     const healthCheck = async () => {
       try {
@@ -37,7 +33,6 @@ const Header = () => {
         setData('Error');
       }
     };
-
     healthCheck();
   }, [dispatch]);
   return (
@@ -55,44 +50,37 @@ const Header = () => {
       </div>
       <h1 className="text-3xl font-bold text-green-600">{data}</h1>
       <div className="flex space-x-4">
-        <div>
-          {isLoggedIn ? (
-            <div className="flex flex-row justify-center items-center">
-              <span>
-                {user?.user_firstname} {user?.user_lastname}
-              </span>
-              <Link className="mx-6 hover:underline" to="/profile">
-                Profile
-              </Link>
-              <button
-                className="ml-6 mr-0 text-xl bg-slate-600 p-2 rounded-full hover:bg-red-800 transition-colors duration-300 ease-in-out"
-                onClick={() => {
-                  handleLogout();
-                }}
-              >
-                Logout
-              </button>
-            </div>
-          ) : (
-            <>
-              <HeaderButton
-                text="Sign Up"
-                navigatePath="/register"
-                bgColor="bg-blue-500"
-                hoverColor="hover:bg-blue-700"
-              />
-              <HeaderButton
-                text="Sign In"
-                navigatePath="/login"
-                bgColor="bg-green-500"
-                hoverColor="hover:bg-green-700"
-              />
-            </>
-          )}
-        </div>
-        {/* <Link className="hover:underline" to="/company/xxx">
-						Company */}
-        {/* TODO: User Profile and Company Profile visible (and register\login not visible) if user isAuth */}
+        {isAuth || isAuthenticated ? (
+          <div className="flex flex-row justify-center items-center">
+            <span>
+              {user?.user_firstname} {user?.user_lastname}
+            </span>
+            <Link className="mx-6 hover:underline" to="/profile">
+              Profile
+            </Link>
+            <button
+              className="ml-6 mr-0 text-xl bg-slate-600 p-2 rounded-full hover:bg-red-800 transition-colors duration-300 ease-in-out"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
+          </div>
+        ) : (
+          <>
+            <HeaderButton
+              text="Sign Up"
+              navigatePath="/register"
+              bgColor="bg-blue-500"
+              hoverColor="hover:bg-blue-700"
+            />
+            <HeaderButton
+              text="Sign In"
+              navigatePath="/login"
+              bgColor="bg-green-500"
+              hoverColor="hover:bg-green-700"
+            />
+          </>
+        )}
       </div>
     </nav>
   );

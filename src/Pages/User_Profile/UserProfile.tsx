@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 import User from '../../Types/User';
 import { useSelector } from 'react-redux';
-import store, { RootState } from '../../Store/store';
+import store from '../../Store/store';
 import { useNavigate } from 'react-router-dom';
 import { getUser } from '../../Api/user';
 import { setUser } from '../../Store/userSlice';
 
 const UserProfile: React.FC = () => {
-  const { user } = useSelector((state: RootState) => state.user) as {
-    user: User | null;
-  };
+  const { user } = useSelector((state: { user: { user: User } }) => {
+    return state.user;
+  });
   useEffect(() => {
     const fetchData = async () => {
       if (!localStorage.getItem('access_token')) return;

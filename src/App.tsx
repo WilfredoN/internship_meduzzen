@@ -7,11 +7,11 @@ import Header from './Components/Header/Header';
 
 // React
 import { Suspense, lazy, useEffect } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
-import { createUser, getUser } from './Api/user';
+import { Routes, Route } from 'react-router-dom';
+import { getUser } from './Api/user';
 import { setIsAuth, setUser } from './Store/userSlice';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from './Store/store';
 
 //Pages
 const About = lazy(() => import('./Pages/About/About'));
@@ -22,35 +22,29 @@ const Register = lazy(() => import('./Pages/Registration/Registration'));
 const Login = lazy(() => import('./Pages/Login/Login'));
 
 function App() {
-  const dispatch = useDispatch();
-  const { user, getAccessTokenSilently, isAuthenticated } = useAuth0();
-  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { getAccessTokenSilently, isLoading } = useAuth0();
   useEffect(() => {
-    const checkAuth = async () => {
-      if (isAuthenticated) {
-        const token = await getAccessTokenSilently();
-        localStorage.setItem('access_token', token);
+    const fetchUser = async () => {
+      try {
         const user = await getUser();
-        // console.log(user);
-        if (user) {
-          dispatch(setUser(user));
-          dispatch(setIsAuth(true));
-        } else {
-          const newUser = await createUser({
-            user_email: user.email,
-            user_firstname: user.given_name,
-            user_lastname: user.family_name,
-            user_avatar: user.picture,
-            user_password: '',
-            user_password_repeat: '',
-          });
-          dispatch(setUser(newUser));
-          dispatch(setIsAuth(true));
-        }
+        dispatch(setUser(user));
+        dispatch(setIsAuth(true));
+        console.log('User fetched:', user);
+      } catch (error) {
+        console.error('Error fetching user:', error);
       }
     };
-    checkAuth();
-  }, [isAuthenticated, user, getAccessTokenSilently, dispatch, navigate]);
+
+    if (!isLoading) {
+      const token =
+        localStorage.getItem('access_token') ||
+        getAccessTokenSilently() ||
+        null;
+      console.log('Token:', token, 'Is loading:', isLoading);
+      fetchUser();
+    }
+  }, [dispatch, getAccessTokenSilently, isLoading]);
 
   return (
     <div className="App">
