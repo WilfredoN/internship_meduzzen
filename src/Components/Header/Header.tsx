@@ -14,7 +14,8 @@ const Header = () => {
   const [data, setData] = useState('');
   const user = useAppSelector((state) => state.user.user as User | null);
   const isAuth = useAppSelector((state) => state.user.isAuth);
-  const { isAuthenticated, logout, isLoading } = useAuth0();
+  const { isAuthenticated, logout, isLoading, getAccessTokenSilently } =
+    useAuth0();
   const handleLogout = () => {
     logout({ logoutParams: { returnTo: window.location.origin } });
     localStorage.removeItem('access_token');
@@ -26,6 +27,8 @@ const Header = () => {
     const fetchUser = async () => {
       try {
         const response = await getUser();
+        const token = await getAccessTokenSilently();
+        localStorage.setItem('access_token', token);
         store.dispatch(setUser(response));
       } catch (error) {
         console.error('Error fetching user', error);
@@ -69,7 +72,7 @@ const Header = () => {
               Profile
             </Link>
             <button
-              className="ml-6 mr-0 text-xl bg-slate-600 p-2 rounded-full hover:bg-red-800 transition-colors duration-300 ease-in-out"
+              className="ml-6 mr-0 text-xl bg-slate-600 px-4 py-2 rounded-full hover:bg-red-800 transition-colors duration-300 ease-in-out"
               onClick={handleLogout}
             >
               Logout

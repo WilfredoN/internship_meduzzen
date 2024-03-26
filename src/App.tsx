@@ -27,13 +27,17 @@ function App() {
   const user = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   useEffect(() => {
-    if (user.isAuth) {
+    if (!user.isAuth) {
+      dispatch(setLoading(false));
       return;
     }
 
     const fetchUserData = async () => {
       try {
         const userData = await getUser();
+        if (!userData) {
+          return;
+        }
         dispatch(setUser(userData));
         dispatch(setIsAuth(true));
         dispatch(setLoading(false));
