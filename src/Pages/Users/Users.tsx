@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { updatePage } from '../../Store/paginationSlice';
+import { getUserById, getUsers } from '../../Api/user';
 import Table from '../../Components/Table/Table';
-import { getUsers } from '../../Api/user';
+import { updatePage } from '../../Store/paginationSlice';
+import { setSelectedUser } from '../../Store/userSlice';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -10,8 +11,10 @@ const Users = () => {
   const [pageSize, setPageSize] = useState(10);
   const dispatch = useDispatch();
 
-  const getUserInfo = (id: number) => {
-    console.log('User ID:', id);
+  const getUserInfo = async (id: number) => {
+    const user = await getUserById(id);
+    dispatch(setSelectedUser(user));
+    console.log(user);
   };
 
   useEffect(() => {

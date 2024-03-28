@@ -1,6 +1,6 @@
 import React from 'react';
-import TableHeader from './TableHeader';
 import Row, { CellType } from './Row';
+import TableHeader from './TableHeader';
 
 interface TablePropsType {
   [key: string]: string | boolean | number;
