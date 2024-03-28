@@ -25,29 +25,27 @@ function App() {
   const user = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    if (!user.isAuth) {
-      dispatch(setLoading(false));
-      return;
-    }
-
-    const fetchUserData = async () => {
-      try {
-        const userData = await getUser();
-        if (!userData) {
-          return;
-        }
-        dispatch(setUser(userData));
-        dispatch(setIsAuth(true));
-        dispatch(setLoading(false));
-      } catch (error) {
-        dispatch(setLoading(false));
-        console.log('Error fetching user', error);
+  const fetchUserData = async () => {
+    try {
+      const userData = await getUser();
+      if (!userData) {
+        return;
       }
-    };
+      dispatch(setUser(userData));
+      dispatch(setIsAuth(true));
+      dispatch(setLoading(false));
+    } catch (error) {
+      console.log('Error fetching user', error);
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
 
-    fetchUserData();
-  }, [user.isAuth, dispatch]);
+  useEffect(() => {
+    if (!user.loading && user.isAuth) {
+      fetchUserData();
+    }
+  }, [user.isAuth, user.loading, dispatch]);
 
   return (
     <div className="App">
@@ -56,23 +54,23 @@ function App() {
         fallback={<img src={logo} alt="logo" className="App-logo z-10" />}
       >
         <Routes>
-          {user.isAuth && (
+          {!user.loading && (
             <>
-              <Route path="/users" element={<Users />} />
-              <Route path="/companies" element={<Companies />} />
-              <Route path="/profile" element={<UserProfile />} />
+              {user.isAuth ? (
+                <>
+                  <Route path="/users" element={<Users />} />
+                  <Route path="/companies" element={<Companies />} />
+                  <Route path="/profile" element={<UserProfile />} />
+                </>
+              ) : (
+                <>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                </>
+              )}
+              <Route path="/about" element={<About />} />
             </>
           )}
-
-          {!user.isAuth && (
-            <>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-            </>
-          )}
-
-          <Route path="/" element={<About />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
     </div>
