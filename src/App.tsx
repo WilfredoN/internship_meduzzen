@@ -6,11 +6,9 @@ import logo from './logo.svg';
 import Header from './Components/Header/Header';
 
 // React
-import { useAuth0 } from '@auth0/auth0-react';
 import { Suspense, lazy, useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { getUser } from './Api/user';
-import PrivateRoutes from './Components/Routes/PrivateRoutes';
 import { useAppSelector } from './Store/hooks';
 import { useAppDispatch } from './Store/store';
 import { setIsAuth, setLoading, setUser } from './Store/userSlice';
@@ -26,6 +24,7 @@ const Login = lazy(() => import('./Pages/Login/Login'));
 function App() {
   const user = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
+
   useEffect(() => {
     if (!user.isAuth) {
       dispatch(setLoading(false));
@@ -57,14 +56,26 @@ function App() {
         fallback={<img src={logo} alt="logo" className="App-logo z-10" />}
       >
         <Routes>
-          <Route element={<PrivateRoutes />}>
-            <Route path="/users" element={<Users />} />
-            <Route path="/companies" element={<Companies />} />
-            <Route path="/profile" element={<UserProfile />} />
-          </Route>
+          {/* Страницы доступные только авторизованным пользователям */}
+          {user.isAuth && (
+            <>
+              <Route path="/users" element={<Users />} />
+              <Route path="/companies" element={<Companies />} />
+              <Route path="/profile" element={<UserProfile />} />
+            </>
+          )}
+
+          {/* Страницы доступные только неавторизованным пользователям */}
+          {!user.isAuth && (
+            <>
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+            </>
+          )}
+
+          {/* Общие страницы */}
           <Route path="/" element={<About />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
     </div>

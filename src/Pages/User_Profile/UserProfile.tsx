@@ -3,10 +3,7 @@ import { useAppSelector } from '../../Store/hooks';
 import User from '../../Types/User';
 
 const UserProfile: React.FC = () => {
-  const user = useAppSelector(
-    (state: { user: { user: User | null; isAuth: boolean } }) =>
-      state.user.user,
-  );
+  const user = useAppSelector<User | null>((state) => state.user.user);
 
   return (
     <div className="w-1/2 h-full flex flex-row items-center space-y-4 bg-slate-600 rounded-2xl">
