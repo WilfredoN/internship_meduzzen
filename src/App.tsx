@@ -7,11 +7,12 @@ import Header from './Components/Header/Header';
 
 // React
 import { Suspense, lazy, useEffect } from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { getUser } from './Api/user';
 import { useAppSelector } from './Store/hooks';
 import { useAppDispatch } from './Store/store';
 import { setIsAuth, setLoading, setUser } from './Store/userSlice';
+import PrivateRoute from './Utils/Routes/PrivateRoute';
 
 //Pages
 const About = lazy(() => import('./Pages/About/About'));
@@ -24,28 +25,28 @@ const Login = lazy(() => import('./Pages/Login/Login'));
 function App() {
   const user = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
-
-  const fetchUserData = async () => {
-    try {
-      const userData = await getUser();
-      if (!userData) {
-        return;
-      }
-      dispatch(setUser(userData));
-      dispatch(setIsAuth(true));
-      dispatch(setLoading(false));
-    } catch (error) {
-      console.log('Error fetching user', error);
-    } finally {
-      dispatch(setLoading(false));
-    }
-  };
-
   useEffect(() => {
-    if (!user.loading && user.isAuth) {
-      fetchUserData();
+    if (!user.isAuth) {
+      dispatch(setLoading(false));
+      return;
     }
-  }, [user.isAuth, user.loading, dispatch]);
+    const fetchUserData = async () => {
+      try {
+        const userData = await getUser();
+        if (!userData) {
+          return;
+        }
+        dispatch(setUser(userData));
+        dispatch(setIsAuth(true));
+        dispatch(setLoading(false));
+      } catch (error) {
+        dispatch(setLoading(false));
+        console.log('Error fetching user', error);
+      }
+    };
+
+    fetchUserData();
+  }, [user.isAuth, dispatch]);
 
   return (
     <div className="App">
@@ -54,23 +55,14 @@ function App() {
         fallback={<img src={logo} alt="logo" className="App-logo z-10" />}
       >
         <Routes>
-          {!user.loading && (
-            <>
-              {user.isAuth ? (
-                <>
-                  <Route path="/users" element={<Users />} />
-                  <Route path="/companies" element={<Companies />} />
-                  <Route path="/profile" element={<UserProfile />} />
-                </>
-              ) : (
-                <>
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
-                </>
-              )}
-              <Route path="/about" element={<About />} />
-            </>
-          )}
+          <Route path="/" element={<PrivateRoute />}>
+            <Route path="/users" element={<Users />} />
+            <Route path="/companies" element={<Companies />} />
+            <Route path="/profile" element={<UserProfile />} />
+          </Route>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/about" element={<About />} />
         </Routes>
       </Suspense>
     </div>

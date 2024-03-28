@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useSelector } from 'react-redux';
 import './Header.css';
@@ -14,6 +14,7 @@ const Header = () => {
   const [data, setData] = useState('');
   const user = useAppSelector((state) => state.user.user as User | null);
   const isAuth = useAppSelector((state) => state.user.isAuth);
+  const navigate = useNavigate();
   const { isAuthenticated, logout, isLoading, getAccessTokenSilently } =
     useAuth0();
   const handleLogout = () => {
@@ -21,6 +22,7 @@ const Header = () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('user');
     store.dispatch(resetUser());
+    navigate('/login');
   };
 
   useEffect(() => {

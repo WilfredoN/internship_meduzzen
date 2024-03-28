@@ -7,7 +7,7 @@ export const Auth0 = () => {
   const AuthClick = async () => {
     await loginWithRedirect({
       appState: {
-        returnTo: '/',
+        returnTo: '/profile',
       },
       authorizationParams: {
         screen_hint: 'signup',
