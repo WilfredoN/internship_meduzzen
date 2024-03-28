@@ -2,8 +2,14 @@ import React from 'react';
 import { useAppSelector } from '../../Store/hooks';
 import User from '../../Types/User';
 
+type RootState = {
+  user: {
+    user: User | null;
+    isAuth: boolean;
+  };
+};
 const UserProfile: React.FC = () => {
-  const user = useAppSelector<User | null>((state) => state.user.user);
+  const user = useAppSelector((state: RootState) => state.user.user);
 
   return (
     <div className="w-1/2 h-full flex flex-row items-center space-y-4 bg-slate-600 rounded-2xl">
