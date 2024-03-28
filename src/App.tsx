@@ -56,7 +56,6 @@ function App() {
         fallback={<img src={logo} alt="logo" className="App-logo z-10" />}
       >
         <Routes>
-          {/* Страницы доступные только авторизованным пользователям */}
           {user.isAuth && (
             <>
               <Route path="/users" element={<Users />} />
@@ -65,7 +64,6 @@ function App() {
             </>
           )}
 
-          {/* Страницы доступные только неавторизованным пользователям */}
           {!user.isAuth && (
             <>
               <Route path="/login" element={<Login />} />
@@ -73,7 +71,6 @@ function App() {
             </>
           )}
 
-          {/* Общие страницы */}
           <Route path="/" element={<About />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
