@@ -2,13 +2,13 @@ import React from 'react';
 import TableHeader from './TableHeader';
 import Row, { CellType } from './Row';
 
-// Define the data type for the table.
 interface TablePropsType {
   [key: string]: string | boolean | number;
 }
 // Define the table props.
 interface TableProps {
   data: TablePropsType[];
+  onRowClick?: (id: number) => void;
 }
 
 // value starting with http - image, so process as image;
@@ -16,7 +16,11 @@ interface TableProps {
 // otherwise, process as is.
 const getCellValue = (key: string, value: string | boolean | number) => {
   return typeof value === 'string' && value.startsWith('http') ? (
-    <img src={String(value)} alt={key} className="w-1/2 rounded-full mx-auto" />
+    <img
+      src={String(value)}
+      alt={key}
+      className="w-16 h-16 rounded-full mx-auto"
+    />
   ) : typeof value === 'boolean' ? (
     value ? (
       'Yes'
@@ -28,7 +32,7 @@ const getCellValue = (key: string, value: string | boolean | number) => {
   );
 };
 
-const Table: React.FC<TableProps> = ({ data }) => {
+const Table: React.FC<TableProps> = ({ data, onRowClick }) => {
   if (!data || data.length === 0) return null;
 
   const headers = Object.keys(data[0]);
@@ -50,8 +54,12 @@ const Table: React.FC<TableProps> = ({ data }) => {
     <table>
       <TableHeader headers={headers} />
       <tbody>
-        {rows.map((row, index) => (
-          <Row key={index} item={row} />
+        {rows.map((row, index: number) => (
+          <Row
+            key={index}
+            item={row}
+            getInfo={() => onRowClick && onRowClick(row[0].value as number)}
+          />
         ))}
       </tbody>
     </table>

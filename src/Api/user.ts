@@ -53,3 +53,37 @@ export const getUser = async () => {
         return { error: error.message };
     }
 };
+
+// Instance for /users/
+export const getUsers = async (page: number, pageSize: number) => {
+    const token = localStorage.getItem('access_token');
+    try {
+        const response = await axios.get(`${apiUrl}users/`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                page: page,
+                page_size: pageSize
+            }
+        });
+        // console.log(response.data.result);
+        return response.data.result;
+    } catch (error: any) {
+        return { error: error.message };
+    }
+};
+
+// Instance for /user/{id}/
+export const getUserById = async (id: number) => {
+    const token = localStorage.getItem('access_token');
+    try {
+        const response = await axios.get(`${apiUrl}user/${id}/`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        // console.log(response.data.result);
+        return response.data.result;
+    } catch (error: any) {
+        return { error: error.message };
+    }
+}
