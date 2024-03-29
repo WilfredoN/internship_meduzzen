@@ -1,10 +1,10 @@
 import axios from 'axios';
+import instance from './api';
 const apiUrl = process.env.REACT_APP_API_URL;
-
 // Create instance for /auth/login/
 export const login = async (user_email: string, user_password: string) => {
     try {
-        const response = await axios.post(`${apiUrl}auth/login/`, {
+        const response = await instance.post(`auth/login/`, {
             user_email,
             user_password
         });
@@ -29,7 +29,7 @@ export const createUser = async (userData: {
     user_avatar?: string;
 }) => {
     try {
-        const response = await axios.post(`${apiUrl}user/`, userData);
+        const response = await instance.post(`user/`, userData);
         console.log(response);
         return response.data;
     } catch (error: any) {
@@ -42,7 +42,7 @@ export const getUser = async () => {
     const token = localStorage.getItem('access_token');
     // console.log(token);
     try {
-        const response = await axios.get(`${apiUrl}auth/me/`, {
+        const response = await instance.get(`auth/me/`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

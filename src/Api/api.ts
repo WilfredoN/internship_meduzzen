@@ -17,5 +17,4 @@ const healthCheck = async () => {
     }
 }
 
-const api = { instance, healthCheck };
-export default api;
+export default instance;
