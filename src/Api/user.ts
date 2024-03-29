@@ -1,3 +1,4 @@
+import { User } from '@auth0/auth0-react';
 import axios from 'axios';
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -36,6 +37,31 @@ export const createUser = async (userData: {
         console.log(error);
     }
 };
+
+// Instance for /user/{user_id}/update_info/
+export const updateUser = async (userData: {
+    user_id: number,
+    user_firstname: string,
+    user_lastname: string,
+    user_status: string,
+    user_city: string,
+    user_phone: string,
+    user_links: string[],
+}) => {
+    const token = localStorage.getItem('access_token');
+    try {
+        const response = await axios.put(`${apiUrl}user/${userData.user_id}/update_info/`, userData, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        console.log(response);
+        return response.data;
+    } catch (error: any) {
+        console.log(error);
+    }
+};
+
 
 // Instance for /auth/me/
 export const getUser = async () => {
