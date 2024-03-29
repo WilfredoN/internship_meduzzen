@@ -6,8 +6,9 @@ import logo from './logo.svg';
 import Header from './Components/Header/Header';
 
 // React
+import { useAuth0 } from '@auth0/auth0-react';
 import { Suspense, lazy, useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 import { getUser } from './Api/user';
 import { useAppSelector } from './Store/hooks';
 import { useAppDispatch } from './Store/store';
@@ -23,31 +24,66 @@ const Register = lazy(() => import('./Pages/Registration/Registration'));
 const Login = lazy(() => import('./Pages/Login/Login'));
 
 function App() {
+  const { getAccessTokenSilently } = useAuth0();
   const user = useAppSelector((state) => state.user);
+  const isAuth = useAppSelector((state) => state.user.isAuth);
   const dispatch = useAppDispatch();
-  useEffect(() => {
-    if (!user.isAuth) {
+  const navigate = useNavigate();
+
+  const fetchUserData = async () => {
+    try {
+      dispatch(setLoading(true));
+      const token =
+        localStorage.getItem('access_token') ||
+        (await getAccessTokenSilently()) ||
+        null;
+      if (!token) {
+        dispatch(setLoading(false));
+        navigate('/login');
+        return;
+      }
+      localStorage.setItem('access_token', token);
+
+      const userData = await getUser();
+      dispatch(setUser(userData));
+      dispatch(setIsAuth(true));
+      if (
+        window.location.pathname === '/login' ||
+        window.location.pathname === '/register'
+      ) {
+        navigate('/profile');
+      }
+    } catch (error) {
+      console.error(error);
       dispatch(setLoading(false));
-      return;
     }
-    const fetchUserData = async () => {
+  };
+
+  useEffect(() => {
+    if (isAuth) {
+      fetchUserData();
+    }
+  }, [isAuth]);
+
+  useEffect(() => {
+    const fetchData = async () => {
       try {
-        const userData = await getUser();
-        if (!userData) {
+        const token =
+          localStorage.getItem('access_token') ||
+          (await getAccessTokenSilently());
+
+        if (!token) {
           return;
         }
-        dispatch(setUser(userData));
-        dispatch(setIsAuth(true));
-        dispatch(setLoading(false));
+
+        await fetchUserData();
       } catch (error) {
-        dispatch(setLoading(false));
-        console.log('Error fetching user', error);
+        console.error(error);
       }
     };
 
-    fetchUserData();
-  }, [user.isAuth, dispatch]);
-
+    fetchData();
+  }, [getAccessTokenSilently]);
   return (
     <div className="App">
       <Header />
@@ -62,7 +98,7 @@ function App() {
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/about" element={<About />} />
+          <Route path="/about" element={<About />} /> 
         </Routes>
       </Suspense>
     </div>

@@ -9,7 +9,7 @@ const userSlice = createSlice({
             state.isAuth = true;
             state.loading = false;
         },
-        resetUser: (state) => {
+        clearUser: (state) => {
             state.user = null;
             state.isAuth = false;
             state.loading = false;
@@ -24,6 +24,6 @@ const userSlice = createSlice({
     },
 });
 
-export const { setUser, resetUser, setIsAuth, setLoading } = userSlice.actions;
+export const { setUser, clearUser, setIsAuth, setLoading } = userSlice.actions;
 
 export default userSlice.reducer;
