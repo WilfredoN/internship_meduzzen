@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { login } from '../../Api/user';
+import { useNavigate } from 'react-router-dom';
+import { auth } from '../../Api/user';
 import { useAppDispatch } from '../../Store/store';
 import { setIsAuth } from '../../Store/userSlice';
 import { Auth0 } from '../Buttons/Auth0';
-import { useNavigate } from 'react-router-dom';
 const LoginForm = () => {
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
@@ -24,7 +24,7 @@ const LoginForm = () => {
       console.log('Invalid email format');
       return;
     }
-    await login(userEmail, userPassword);
+    await auth.login(userEmail, userPassword);
     dispatch(setIsAuth(true));
   };
 

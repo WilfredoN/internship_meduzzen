@@ -1,7 +1,7 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getUser } from '../../Api/user';
+import { auth } from '../../Api/user';
 import { useAppSelector } from '../../Store/hooks';
 import { useAppDispatch } from '../../Store/store';
 import { clearUser } from '../../Store/userSlice';
@@ -23,7 +23,7 @@ const Header = () => {
   useEffect(() => {
     const getUserData = async () => {
       if (!isAuth && !isLoading) {
-        await getUser();
+        await auth.getUser();
       }
     };
     getUserData();

@@ -9,7 +9,7 @@ import Header from './Components/Header/Header';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Suspense, lazy, useEffect } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
-import { getUser } from './Api/user';
+import { auth } from './Api/user';
 import { useAppSelector } from './Store/hooks';
 import { useAppDispatch } from './Store/store';
 import { setIsAuth, setLoading, setUser } from './Store/userSlice';
@@ -40,7 +40,7 @@ function App() {
       }
       localStorage.setItem('access_token', token);
 
-      const userData = await getUser();
+      const userData = await auth.getUser();
       dispatch(setUser(userData));
       dispatch(setIsAuth(true));
     } catch (error) {
