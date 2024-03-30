@@ -30,13 +30,9 @@ function App() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const fetchUserData = async () => {
+  const fetchUserData = async (token: string) => {
     try {
       dispatch(setLoading(true));
-      const token =
-        localStorage.getItem('access_token') ||
-        (await getAccessTokenSilently()) ||
-        null;
       if (!token) {
         dispatch(setLoading(false));
         navigate('/login');
@@ -47,12 +43,6 @@ function App() {
       const userData = await getUser();
       dispatch(setUser(userData));
       dispatch(setIsAuth(true));
-      if (
-        window.location.pathname === '/login' ||
-        window.location.pathname === '/register'
-      ) {
-        navigate('/profile');
-      }
     } catch (error) {
       console.error(error);
       dispatch(setLoading(false));
@@ -60,30 +50,24 @@ function App() {
   };
 
   useEffect(() => {
-    if (isAuth) {
-      fetchUserData();
-    }
-  }, [isAuth]);
-
-  useEffect(() => {
     const fetchData = async () => {
+      if (isAuth) return;
       try {
         const token =
           localStorage.getItem('access_token') ||
-          (await getAccessTokenSilently());
+          (await getAccessTokenSilently()) ||
+          null;
 
         if (!token) {
           return;
-        }
-
-        await fetchUserData();
+        } else await fetchUserData(token);
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchData();
-  }, [getAccessTokenSilently]);
+  }, [getAccessTokenSilently, isAuth]);
   return (
     <div className="App">
       <Header />

@@ -1,24 +1,31 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { login } from '../../Api/user';
 import { useAppDispatch } from '../../Store/store';
 import { setIsAuth } from '../../Store/userSlice';
 import { Auth0 } from '../Buttons/Auth0';
+import { useNavigate } from 'react-router-dom';
 const LoginForm = () => {
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(true);
-
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (localStorage.getItem('access_token')) {
+      dispatch(setIsAuth(true));
+      navigate('/profile');
+      console.log('Login successful');
+    }
+  }, [dispatch, navigate]);
+
   const handleLogin = async () => {
     if (!isEmailValid) {
       console.log('Invalid email format');
       return;
     }
     await login(userEmail, userPassword);
-    if (localStorage.getItem('access_token')) {
-      dispatch(setIsAuth(true));
-      console.log('Login successful');
-    }
+    dispatch(setIsAuth(true));
   };
 
   const validateEmail = (email: string) => {
