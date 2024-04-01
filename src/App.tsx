@@ -26,7 +26,7 @@ const Login = lazy(() => import('./Pages/Login/Login'));
 function App() {
   const { getAccessTokenSilently } = useAuth0();
   const user = useAppSelector((state) => state.user);
-  const isAuth = useAppSelector((state) => state.user.isAuth);
+  const isAuth = user.isAuth;
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -41,6 +41,12 @@ function App() {
       localStorage.setItem('access_token', token);
 
       const userData = await auth.getUser();
+      if (userData.error) {
+        localStorage.clear();
+        dispatch(setLoading(false));
+        navigate('/login');
+        return;
+      }
       dispatch(setUser(userData));
       dispatch(setIsAuth(true));
     } catch (error) {
