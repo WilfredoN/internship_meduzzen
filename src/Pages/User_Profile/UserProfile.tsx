@@ -12,7 +12,7 @@ const UserProfile: React.FC = () => {
   const user = useAppSelector((state: RootState) => state.user.user);
 
   return (
-    <div className="w-1/2 h-full flex flex-row items-center space-y-4 bg-slate-600 rounded-2xl">
+    <div className="w-fit h-full flex flex-row items-center space-y-4 bg-slate-600 rounded-2xl">
       <img
         src={user?.user_avatar || 'https://via.placeholder.com/150'}
         alt="user avatar"

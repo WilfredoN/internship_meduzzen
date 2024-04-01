@@ -1,5 +1,6 @@
+import { UserCreate } from '../Types/UserCreate';
 import instance from './api';
-// Create instance for /auth/login/
+
 export const auth = {
     login: async (user_email: string, user_password: string) => {
         try {
@@ -11,7 +12,7 @@ export const auth = {
             if (error.response && error.response.status === 404) {
                 return { error: 'User not found' };
             }
-            return { error: error.message || 'Unknown error' };
+            return { error: error.message };
         }
     },
 
@@ -31,16 +32,8 @@ export const auth = {
     }
 };
 
-// User API
 export const user = {
-    createUser: async (userData: {
-        user_password: string;
-        user_password_repeat: string;
-        user_email: string;
-        user_firstname: string;
-        user_lastname: string;
-        user_avatar?: string;
-    }) => {
+    createUser: async (userData: UserCreate) => {
         try {
             const response = await instance.post(`user/`, userData);
             console.log(response);

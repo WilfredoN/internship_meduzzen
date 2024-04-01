@@ -29,28 +29,35 @@ function App() {
   const isAuth = user.isAuth;
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const navigateToLogin = () => {
+    dispatch(setIsAuth(false));
+    navigate('/login');
+  };
+
+  const logError = (error: any) => {
+    console.error(error);
+  };
 
   const fetchUserData = async (token: string) => {
     try {
       dispatch(setLoading(true));
       if (!token) {
-        dispatch(setLoading(false));
-        navigate('/login');
+        navigateToLogin();
         return;
       }
-      localStorage.setItem('access_token', token);
 
       const userData = await auth.getUser();
       if (userData.error) {
         localStorage.clear();
-        dispatch(setLoading(false));
-        navigate('/login');
+        navigateToLogin();
         return;
       }
       dispatch(setUser(userData));
       dispatch(setIsAuth(true));
     } catch (error) {
-      console.error(error);
+      logError(error);
+      navigateToLogin();
+    } finally {
       dispatch(setLoading(false));
     }
   };
@@ -63,17 +70,22 @@ function App() {
           localStorage.getItem('access_token') ||
           (await getAccessTokenSilently()) ||
           null;
-
         if (!token) {
+          console.log('No token found');
           return;
-        } else await fetchUserData(token);
+        }
+        localStorage.setItem('access_token', token);
+        await fetchUserData(token);
       } catch (error) {
-        console.error(error);
+        logError(error);
+        dispatch(setLoading(false));
+      } finally {
+        dispatch(setLoading(false));
       }
     };
 
     fetchData();
-  }, [getAccessTokenSilently, isAuth]);
+  }, [isAuth, dispatch, navigate, getAccessTokenSilently]);
   return (
     <div className="App">
       <Header />
@@ -81,6 +93,7 @@ function App() {
         fallback={<img src={logo} alt="logo" className="App-logo z-10" />}
       >
         <Routes>
+          <Route path="*" element={<h1>404 Not Found</h1>} />
           <Route path="/" element={<PrivateRoute />}>
             <Route path="/users" element={<Users />} />
             <Route path="/companies" element={<Companies />} />

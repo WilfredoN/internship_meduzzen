@@ -1,7 +1,5 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import { useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { auth } from '../../Api/user';
+import { Link } from 'react-router-dom';
 import { useAppSelector } from '../../Store/hooks';
 import { useAppDispatch } from '../../Store/store';
 import { clearUser } from '../../Store/userSlice';
@@ -17,23 +15,13 @@ type RootState = {
 const Header = () => {
   const user = useAppSelector((state: RootState) => state.user.user);
   const isAuth = useAppSelector((state) => state.user.isAuth);
-  const navigate = useNavigate();
   const { logout, isLoading } = useAuth0();
   const dispatch = useAppDispatch();
-  useEffect(() => {
-    const getUserData = async () => {
-      if (!isAuth && !isLoading) {
-        await auth.getUser();
-      }
-    };
-    getUserData();
-  }, [isAuth, isLoading]);
-  const handleLogout = () => {
-    logout({ logoutParams: { returnTo: window.location.origin } });
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('user');
+  const handleLogout = async () => {
+    await logout({});
+    // await logout({ logoutParams: { returnTo: window.location.origin } });
+    localStorage.clear();
     dispatch(clearUser());
-    navigate('/login');
   };
 
   return (
