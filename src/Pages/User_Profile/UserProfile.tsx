@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { updateUser } from '../../Api/user';
+import { user as UserApi } from '../../Api/user';
 import InfoChangeButton from '../../Components/Buttons/InfoChange';
 import { useAppSelector } from '../../Store/hooks';
 import { useAppDispatch } from '../../Store/store';
@@ -32,7 +32,7 @@ const UserProfile: React.FC = () => {
   const handleNewInfo = async () => {
     if (user) {
       const updatedUser = { ...user, ...newInfo };
-      await updateUser(updatedUser as User);
+      await UserApi.updateUser(updatedUser as User);
       dispatch({ type: 'user/updateUser', payload: updatedUser });
       setIsEditing(false);
       setNewInfo({});
@@ -109,7 +109,7 @@ const UserProfile: React.FC = () => {
         </div>
         <button
           onClick={handleNewInfo}
-          className="mt-4 bg-green-500 text-white px-4 py-2 rounded"
+          className="w-1/2 mt-4 bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 duration-150"
         >
           Confirm
         </button>

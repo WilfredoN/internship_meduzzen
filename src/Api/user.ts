@@ -71,5 +71,18 @@ export const user = {
         } catch (error: any) {
             return { error: error.message };
         }
+    },
+    getUserById: async (id: number) => {
+        try {
+            const response = await instance.get(`${apiUrl}user/${id}/`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            console.log(response.data.result);
+            return response.data.result;
+        } catch (error: any) {
+            return { error: error.message };
+        }
     }
 };

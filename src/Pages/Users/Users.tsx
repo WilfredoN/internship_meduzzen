@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { getUserById, getUsers } from '../../Api/user';
+import { user as UserApi } from '../../Api/user';
 import Table from '../../Components/Table/Table';
 import { updatePage } from '../../Store/paginationSlice';
 import { setSelectedUser } from '../../Store/userSlice';
@@ -12,7 +12,7 @@ const Users = () => {
   const dispatch = useDispatch();
 
   const getUserInfo = async (id: number) => {
-    const user = await getUserById(id);
+    const user = await UserApi.getUserById(id);
     dispatch(setSelectedUser(user));
     console.log(user);
   };
@@ -20,7 +20,7 @@ const Users = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await getUsers(page, pageSize);
+        const response = await UserApi.getUsers(page, pageSize);
         setUsers(response.users);
         dispatch(updatePage(page));
       } catch (error) {
