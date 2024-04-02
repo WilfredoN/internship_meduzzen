@@ -1,24 +1,16 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 export const Auth0 = () => {
   const { loginWithRedirect, isAuthenticated } = useAuth0();
-  const navigate = useNavigate();
 
   const AuthClick = async () => {
     await loginWithRedirect({
+      appState: { returnTo: '/' },
       authorizationParams: {
         screen_hint: 'signup',
       },
     });
   };
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/profile');
-    }
-  }, [isAuthenticated]);
 
   return (
     <button

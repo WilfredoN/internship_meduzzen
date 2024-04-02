@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { user as UserApi } from '../../Api/user';
+import { useNavigate } from 'react-router';
+import { user as UserApi, auth } from '../../Api/user';
 import InfoChangeButton from '../../Components/Buttons/InfoChange';
 import { useAppSelector } from '../../Store/hooks';
 import { useAppDispatch } from '../../Store/store';
+import { clearUser } from '../../Store/userSlice';
 import User from '../../Types/User';
+import { useAuth0 } from '@auth0/auth0-react';
 type RootState = {
   user: {
     user: User | null;
@@ -13,10 +16,11 @@ type RootState = {
 const UserProfile: React.FC = () => {
   const user = useAppSelector((state: RootState) => state.user.user);
   const dispatch = useAppDispatch();
+  const { logout } = useAuth0();
   const [editableField, setEditableField] = useState<string | null>(null);
   const [newInfo, setNewInfo] = useState<{ [key: string]: string }>({});
   const [isEditing, setIsEditing] = useState<boolean>(false);
-
+  const navigate = useNavigate();
   const handleFieldChange = (field: string, value: string) => {
     setNewInfo({ ...newInfo, [field]: value });
   };
@@ -38,7 +42,15 @@ const UserProfile: React.FC = () => {
       setNewInfo({});
     }
   };
-
+  const handleDelete = async () => {
+    if (user) {
+      await auth.deleteUser(user.user_id);
+      dispatch(clearUser());
+      localStorage.clear();
+      logout({});
+      navigate('/login');
+    }
+  };
   return (
     <div className="w-fit h-full flex flex-row items-center space-y-4 bg-slate-600 rounded-2xl">
       <img
@@ -107,12 +119,20 @@ const UserProfile: React.FC = () => {
         <div className="text-2xl">
           {user?.is_superuser ? 'Superuser' : 'Regular user'}
         </div>
-        <button
-          onClick={handleNewInfo}
-          className="w-1/2 mt-4 bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 duration-150"
-        >
-          Confirm
-        </button>
+        <div className="flex justify-center items-center mt-4">
+          <button
+            onClick={handleNewInfo}
+            className="w-1/3 mr-4 bg-green-500 text-white text-2xl px-4 py-2 rounded-full hover:bg-green-600 duration-150"
+          >
+            Confirm
+          </button>
+          <button
+            onClick={handleDelete}
+            className="w-1/3 bg-red-500 text-white text-2xl px-4 py-2 rounded-full hover:bg-red-600 duration-150"
+          >
+            Delete
+          </button>
+        </div>
       </div>
     </div>
   );

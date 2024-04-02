@@ -51,7 +51,7 @@ const Table: React.FC<TableProps> = ({ data, onRowClick }) => {
   const rows = data.map(formatData);
 
   return (
-    <table>
+    <table className="mb-6">
       <TableHeader headers={headers} />
       <tbody>
         {rows.map((row, index: number) => (

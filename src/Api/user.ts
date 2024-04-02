@@ -31,6 +31,19 @@ export const auth = {
         } catch (error: any) {
             return { error: error.message };
         }
+    },
+    deleteUser: async (id: number) => {
+        try {
+            const response = await instance.delete(`${apiUrl}user/${id}/`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            console.log(response);
+            return response.data;
+        } catch (error: any) {
+            return { error: error.message };
+        }
     }
 };
 

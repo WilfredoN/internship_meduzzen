@@ -9,6 +9,7 @@ const Users = () => {
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [selectedSize, setSelectedSize] = useState(10);
   const dispatch = useDispatch();
 
   const getUserInfo = async (id: number) => {
@@ -17,23 +18,76 @@ const Users = () => {
     console.log(user);
   };
 
+  const fetchUsers = async () => {
+    try {
+      const response = await UserApi.getUsers(page, pageSize);
+      setUsers(response.users);
+      dispatch(updatePage(page));
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await UserApi.getUsers(page, pageSize);
-        setUsers(response.users);
-        dispatch(updatePage(page));
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      }
-    };
-
     fetchUsers();
-  }, [page, pageSize, dispatch]);
+  }, [page, pageSize, selectedSize, dispatch]);
 
   return (
     <div className="users">
       <Table data={users} onRowClick={(id: number) => getUserInfo(id)} />
+      <button
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+        onClick={() => {
+          setPage(page - 1);
+          fetchUsers();
+        }}
+        disabled={page === 1}
+      >
+        Previous
+      </button>
+      <button
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full ml-8 mr-8"
+        onClick={() => {
+          setPage(page + 1);
+          console.log('Next ' + page);
+          fetchUsers();
+        }}
+      >
+        Next
+      </button>
+      <select
+        className="border border-gray-300 rounded-md text-black"
+        value={selectedSize || 10}
+        onChange={(e) => setSelectedSize(Number(e.target.value))}
+      >
+        <option
+          value={5}
+          className="text-black bg-inherit"
+          onChange={(e) => setPageSize(Number(e))}
+        >
+          5
+        </option>
+        <option
+          value={10}
+          className="text-black bg-inherit"
+          onChange={(e) => setPageSize(Number(e))}
+        >
+          10
+        </option>
+        <option
+          value={15}
+          className="text-black bg-inherit"
+          onChange={(e) => setPageSize(Number(e))}
+        >
+          15
+        </option>
+        <option
+          value={20}
+          className="text-black bg-inherit"
+          onChange={(e) => setPageSize(Number(e))}
+        >
+          20
+        </option>
+      </select>
     </div>
   );
 };
