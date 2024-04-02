@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { createUser } from '../../Api/user';
+import { useState } from 'react';
+import { user } from '../../Api/user';
 import { Auth0 } from '../Buttons/Auth0';
 const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
@@ -9,11 +9,10 @@ const RegistrationForm = () => {
   const [userEmail, setUserEmail] = useState('');
   const [userFirstName, setUserFirstName] = useState('');
   const [userLastName, setUserLastName] = useState('');
-
-  const handleRegistration = () => {
+  const handleRegistration = async () => {
     if (userPassword === userPasswordRepeat && emailRegex.test(userEmail)) {
       console.log('Registration successful');
-      createUser({
+      await user.createUser({
         user_password: userPassword,
         user_password_repeat: userPasswordRepeat,
         user_email: userEmail,

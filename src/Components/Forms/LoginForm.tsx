@@ -1,26 +1,40 @@
 import { useState } from 'react';
-import { login } from '../../Api/user';
-import { useNavigate } from 'react-router-dom';
-import { setIsAuth } from '../../Store/userSlice';
-import { Auth0 } from '../Buttons/Auth0';
+import { auth } from '../../Api/user';
 import { useAppDispatch } from '../../Store/store';
+import { setIsAuth, setUser } from '../../Store/userSlice';
+import { Auth0 } from '../Buttons/Auth0';
+import { useNavigate } from 'react-router-dom';
 const LoginForm = () => {
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(true);
-
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  const authorize = async () => {
+    try {
+      const user = await auth.getUser();
+      if (!user) return;
+      dispatch(setIsAuth(true));
+      dispatch(setUser(user));
+    } catch (error) {
+      console.error('Failed to get user:', error);
+    }
+  };
+
   const handleLogin = async () => {
     if (!isEmailValid) {
       console.log('Invalid email format');
       return;
     }
-    await login(userEmail, userPassword);
-    if (localStorage.getItem('access_token')) {
-      dispatch(setIsAuth(true));
-      navigate('/profile');
-      console.log('Login successful');
+    try {
+      const loginRequest = await auth.login(userEmail, userPassword);
+      if (loginRequest.error) {
+        console.log(loginRequest.error);
+        return;
+      }
+      authorize();
+    } catch (error) {
+      console.error('Failed to login:', error);
     }
   };
 

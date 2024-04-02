@@ -1,55 +1,29 @@
-import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useSelector } from 'react-redux';
-import './Header.css';
-import HeaderButton from '../Buttons/HeaderButton';
-import instance from '../../Api/api';
-import { resetUser, setUser } from '../../Store/userSlice';
-import User from '../../Types/User';
-import store from '../../Store/store';
+import { Link } from 'react-router-dom';
 import { useAppSelector } from '../../Store/hooks';
-import { getUser } from '../../Api/user';
+import { useAppDispatch } from '../../Store/store';
+import { clearUser } from '../../Store/userSlice';
+import User from '../../Types/User';
+import HeaderButton from '../Buttons/HeaderButton';
+import './Header.css';
+type RootState = {
+  user: {
+    user: User | null;
+    isAuth: boolean;
+  };
+};
 const Header = () => {
-  const [data, setData] = useState('');
-  const user = useAppSelector((state) => state.user.user as User | null);
+  const user = useAppSelector((state: RootState) => state.user.user);
   const isAuth = useAppSelector((state) => state.user.isAuth);
-  const navigate = useNavigate();
-  const { isAuthenticated, logout, isLoading, getAccessTokenSilently } =
-    useAuth0();
-  const handleLogout = () => {
-    logout({ logoutParams: { returnTo: window.location.origin } });
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('user');
-    store.dispatch(resetUser());
-    navigate('/login');
+  const { logout, isLoading } = useAuth0();
+  const dispatch = useAppDispatch();
+  const handleLogout = async () => {
+    await logout({});
+    // await logout({ logoutParams: { returnTo: window.location.origin } });
+    localStorage.clear();
+    dispatch(clearUser());
   };
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await getUser();
-        const token = await getAccessTokenSilently();
-        localStorage.setItem('access_token', token);
-        store.dispatch(setUser(response));
-      } catch (error) {
-        console.error('Error fetching user', error);
-      }
-    };
-    if (isAuthenticated && !isLoading) fetchUser();
-  }, [isAuthenticated]);
-  useEffect(() => {
-    const healthCheck = async () => {
-      try {
-        const response = await instance.healthCheck();
-        setData(response.status_code || response.error);
-      } catch (error) {
-        console.error('Error fetching data', error);
-        setData('Error');
-      }
-    };
-    healthCheck();
-  });
   return (
     <nav className="header flex flex-row justify-between items-center space-x-4 p-12 mt-6 mb-16 bg-gray-800 text-white rounded-full h-16 max-w-screen-lg w-full">
       <div className="flex space-x-4">
@@ -63,9 +37,8 @@ const Header = () => {
           Companies
         </Link>
       </div>
-      <h1 className="text-3xl font-bold text-green-600">{data}</h1>
       <div className="flex space-x-4">
-        {isAuth || isAuthenticated ? (
+        {isAuth ? (
           <div className="flex flex-row justify-center items-center">
             <span>
               {user?.user_firstname} {user?.user_lastname}
