@@ -1,44 +1,18 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import { useAppSelector } from '../../Store/hooks';
 import User from '../../Types/User';
-import { useSelector } from 'react-redux';
-import store, { RootState } from '../../Store/store';
-import { useNavigate } from 'react-router-dom';
-import { getUser } from '../../Api/user';
-import { setUser } from '../../Store/userSlice';
 
-const UserProfile: React.FC = () => {
-  const { user } = useSelector((state: RootState) => state.user) as {
+type RootState = {
+  user: {
     user: User | null;
+    isAuth: boolean;
   };
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!localStorage.getItem('access_token')) return;
-      try {
-        const response = await getUser();
-        store.dispatch(setUser(response));
-        localStorage.setItem('user', JSON.stringify(response));
-      } catch (error) {
-        console.error('Error fetching data', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-  const navigate = useNavigate();
-  useEffect(() => {
-    const successfulLogin = async () => {
-      if (!user) {
-        if (!localStorage.getItem('access_token')) {
-          navigate('/login');
-        }
-        return <div>Loading...</div>;
-      }
-    };
-    successfulLogin();
-  }, [user]);
+};
+const UserProfile: React.FC = () => {
+  const user = useAppSelector((state: RootState) => state.user.user);
 
   return (
-    <div className="w-1/2 h-full flex flex-row items-center space-y-4 bg-slate-600 rounded-2xl">
+    <div className="w-fit h-full flex flex-row items-center space-y-4 bg-slate-600 rounded-2xl">
       <img
         src={user?.user_avatar || 'https://via.placeholder.com/150'}
         alt="user avatar"
