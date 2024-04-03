@@ -12,7 +12,7 @@ interface RowProps {
 }
 
 const Row: React.FC<RowProps> = memo(({ item, getInfo }) => (
-  <tr className="border-b" onClick={getInfo}>
+  <tr className="border-b hover:bg-gray-700 duration-300" onClick={getInfo}>
     {item.map((cell, index) => (
       <Cell key={index} value={cell.value} />
     ))}
