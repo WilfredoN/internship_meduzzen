@@ -36,7 +36,7 @@ const UserProfile: React.FC = () => {
   const handleNewInfo = async () => {
     if (user) {
       const updatedUser = { ...user, ...newInfo };
-      await UserApi.updateUser(updatedUser as User);
+      await UserApi.updateInfo(updatedUser as User);
       dispatch({ type: 'user/updateUser', payload: updatedUser });
       setIsEditing(false);
       setNewInfo({});

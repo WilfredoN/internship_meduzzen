@@ -57,11 +57,41 @@ export const user = {
             console.log(error);
         }
     },
-    updateUser: async (userData: User) => {
+    updateInfo: async (userData: User) => {
         try {
             const response = await instance.put(`${apiUrl}user/${userData.user_id}/update_info/`, userData, {
                 headers: {
                     Authorization: `Bearer ${token}`
+                }
+            });
+            console.log(response);
+            return response.data;
+        } catch (error: any) {
+            console.log(error);
+        }
+    },
+    updatePassword: async (user_password: string, user_password_repeat: string, userData: User) => {
+        try {
+            const response = await instance.put(`${apiUrl}user/${userData.user_id}/update_password/`, { user_password, user_password_repeat }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            console.log(response);
+            return response.data;
+        } catch (error: any) {
+            console.log(error);
+        }
+
+    },
+    updateAvatar: async (avatar: File, userData: User) => {
+        try {
+            const formData = new FormData();
+            formData.append('user_avatar', avatar);
+            const response = await instance.put(`${apiUrl}user/${userData.user_id}/update_avatar/`, formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
                 }
             });
             console.log(response);
