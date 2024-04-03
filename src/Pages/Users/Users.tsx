@@ -11,7 +11,7 @@ const Users = () => {
   const [pageSize, setPageSize] = useState(10);
   const [selectedSize, setSelectedSize] = useState(10);
   const dispatch = useDispatch();
-
+  const [isLastPage, setIsLastPage] = useState(false);
   const getUserInfo = async (id: number) => {
     const user = await UserApi.getUserById(id);
     dispatch(setSelectedUser(user));
@@ -24,6 +24,12 @@ const Users = () => {
       setUsers(response.users);
       dispatch(updatePage(page));
       console.log(`page: ${page}, pageSize: ${pageSize}`);
+
+      if (response.users.length < pageSize) {
+        setIsLastPage(true);
+      } else {
+        setIsLastPage(false);
+      }
     } catch (error) {
       console.error('Error fetching users:', error);
     }
@@ -32,7 +38,9 @@ const Users = () => {
     fetchUsers();
   }, [page, pageSize, selectedSize, dispatch]);
 
-  return (
+  return users.length === 0 ? (
+    <div>Loading...</div>
+  ) : (
     <div className="users">
       <Table data={users} onRowClick={(id: number) => getUserInfo(id)} />
       <button
@@ -52,6 +60,7 @@ const Users = () => {
           console.log('Next ' + page);
           fetchUsers();
         }}
+        disabled={page === pageSize}
       >
         Next
       </button>

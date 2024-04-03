@@ -58,9 +58,9 @@ export const user = {
             console.log(error);
         }
     },
-    updateInfo: async (userData: UserUpdate, user: User) => {
+    updateInfo: async (userData: UserUpdate, user_id: number) => {
         try {
-            const response = await instance.put(`${apiUrl}user/${user.user_id}/update_info/`, userData, {
+            const response = await instance.put(`${apiUrl}user/${user_id}/update_info/`, userData, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

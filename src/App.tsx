@@ -33,11 +33,6 @@ function App() {
     dispatch(setIsAuth(false));
     navigate('/login');
   };
-
-  const logError = (error: any) => {
-    console.error(error);
-  };
-
   const fetchUserData = async (token: string) => {
     try {
       dispatch(setLoading(true));
@@ -55,7 +50,6 @@ function App() {
       dispatch(setUser(userData));
       dispatch(setIsAuth(true));
     } catch (error) {
-      logError(error);
       navigateToLogin();
     } finally {
       dispatch(setLoading(false));
@@ -77,7 +71,6 @@ function App() {
         localStorage.setItem('access_token', token);
         await fetchUserData(token);
       } catch (error) {
-        logError(error);
         dispatch(setLoading(false));
       } finally {
         dispatch(setLoading(false));
@@ -94,7 +87,8 @@ function App() {
       >
         <Routes>
           <Route path="*" element={<h1>404 Not Found</h1>} />
-          <Route path="/" element={<PrivateRoute />}>
+          <Route path="/" element={<About />} />
+          <Route path="" element={<PrivateRoute />}>
             <Route path="/users" element={<Users />} />
             <Route path="/companies" element={<Companies />} />
             <Route path="/profile" element={<UserProfile />} />

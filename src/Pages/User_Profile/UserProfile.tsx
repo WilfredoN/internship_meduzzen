@@ -36,7 +36,7 @@ const UserProfile: React.FC = () => {
   const handleNewInfo = async () => {
     if (user) {
       const updatedUser = { ...user, ...newInfo };
-      await UserApi.updateInfo(updatedUser as User);
+      await UserApi.updateInfo(updatedUser as User, user.user_id);
       dispatch({ type: 'user/updateUser', payload: updatedUser });
       setIsEditing(false);
       setNewInfo({});
@@ -59,7 +59,7 @@ const UserProfile: React.FC = () => {
         className="ml-16 w-32 h-32 rounded-full"
       />
       <div className="flex flex-col text-left items-left w-full h-full p-4 ml-6">
-        <div className="text-4xl font-bold">
+        <div className="text-3xl font-bold mb-3">
           {user?.user_firstname} {user?.user_lastname}
         </div>
         <div className="text-3xl mb-4">{user?.user_email}</div>
@@ -122,13 +122,13 @@ const UserProfile: React.FC = () => {
         <div className="flex justify-center items-center mt-4">
           <button
             onClick={handleNewInfo}
-            className="w-32 mr-4 bg-green-500 text-white text-2xl px-4 py-2 rounded-full hover:bg-green-600 duration-150"
+            className="w-32 mr-4 bg-green-500 text-white text-2xl px-4 py-2 rounded-full hover:bg-green-700 duration-150"
           >
             Confirm
           </button>
           <button
             onClick={handleDelete}
-            className="w-32 bg-red-500 text-white text-2xl px-4 py-2 rounded-full hover:bg-red-600 duration-150"
+            className="w-32 bg-red-500 text-white text-2xl px-4 py-2 rounded-full hover:bg-red-700 duration-150"
           >
             Delete
           </button>
