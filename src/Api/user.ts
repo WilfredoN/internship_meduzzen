@@ -1,5 +1,6 @@
 import User from '../Types/User';
 import { UserCreate } from '../Types/UserCreate';
+import UserUpdate from '../Types/UserUpdate';
 import instance from './api';
 const apiUrl = process.env.REACT_APP_API_URL;
 const token = localStorage.getItem('access_token');
@@ -57,9 +58,9 @@ export const user = {
             console.log(error);
         }
     },
-    updateInfo: async (userData: User) => {
+    updateInfo: async (userData: UserUpdate, user: User) => {
         try {
-            const response = await instance.put(`${apiUrl}user/${userData.user_id}/update_info/`, userData, {
+            const response = await instance.put(`${apiUrl}user/${user.user_id}/update_info/`, userData, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
