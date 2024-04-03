@@ -52,7 +52,7 @@ const UserProfile: React.FC = () => {
     }
   };
   return (
-    <div className="w-fit h-full flex flex-row items-center space-y-4 bg-slate-600 rounded-2xl">
+    <div className="max-w-3xl h-full flex flex-row items-center space-y-4 bg-slate-600 rounded-2xl">
       <img
         src={user?.user_avatar || 'https://via.placeholder.com/150'}
         alt="user avatar"
@@ -72,7 +72,7 @@ const UserProfile: React.FC = () => {
               className="text-black text-2xl flex-row bg-white rounded-lg px-4 py-2"
             />
           ) : (
-            user?.user_status || 'No status'
+            newInfo?.user_status || user?.user_status || 'No status'
           )}
           <InfoChangeButton
             change={() =>
@@ -89,7 +89,7 @@ const UserProfile: React.FC = () => {
               className="text-black text-2xl flex-row bg-white rounded-lg px-4 py-2"
             />
           ) : (
-            user?.user_city || 'No city'
+            newInfo?.user_city || user?.user_city || 'No city'
           )}
           <InfoChangeButton
             change={() => handleButtonClick('user_city', user?.user_city || '')}
@@ -104,7 +104,7 @@ const UserProfile: React.FC = () => {
               className="text-black text-2xl flex-row bg-white rounded-lg px-4 py-2"
             />
           ) : (
-            user?.user_phone || 'No phone'
+            newInfo?.user_phone || user?.user_phone || 'No phone'
           )}
           <InfoChangeButton
             change={() =>
@@ -122,13 +122,13 @@ const UserProfile: React.FC = () => {
         <div className="flex justify-center items-center mt-4">
           <button
             onClick={handleNewInfo}
-            className="w-1/3 mr-4 bg-green-500 text-white text-2xl px-4 py-2 rounded-full hover:bg-green-600 duration-150"
+            className="w-32 mr-4 bg-green-500 text-white text-2xl px-4 py-2 rounded-full hover:bg-green-600 duration-150"
           >
             Confirm
           </button>
           <button
             onClick={handleDelete}
-            className="w-1/3 bg-red-500 text-white text-2xl px-4 py-2 rounded-full hover:bg-red-600 duration-150"
+            className="w-32 bg-red-500 text-white text-2xl px-4 py-2 rounded-full hover:bg-red-600 duration-150"
           >
             Delete
           </button>

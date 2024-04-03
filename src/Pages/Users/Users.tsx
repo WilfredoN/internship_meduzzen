@@ -23,6 +23,7 @@ const Users = () => {
       const response = await UserApi.getUsers(page, pageSize);
       setUsers(response.users);
       dispatch(updatePage(page));
+      console.log(`page: ${page}, pageSize: ${pageSize}`);
     } catch (error) {
       console.error('Error fetching users:', error);
     }
@@ -57,34 +58,22 @@ const Users = () => {
       <select
         className="border border-gray-300 rounded-md text-black"
         value={selectedSize || 10}
-        onChange={(e) => setSelectedSize(Number(e.target.value))}
+        onChange={(e) => {
+          setSelectedSize(Number(e.target.value));
+          setPageSize(Number(e.target.value));
+          fetchUsers();
+        }}
       >
-        <option
-          value={5}
-          className="text-black bg-inherit"
-          onChange={(e) => setPageSize(Number(e))}
-        >
+        <option value={5} className="text-black bg-inherit">
           5
         </option>
-        <option
-          value={10}
-          className="text-black bg-inherit"
-          onChange={(e) => setPageSize(Number(e))}
-        >
+        <option value={10} className="text-black bg-inherit">
           10
         </option>
-        <option
-          value={15}
-          className="text-black bg-inherit"
-          onChange={(e) => setPageSize(Number(e))}
-        >
+        <option value={15} className="text-black bg-inherit">
           15
         </option>
-        <option
-          value={20}
-          className="text-black bg-inherit"
-          onChange={(e) => setPageSize(Number(e))}
-        >
+        <option value={20} className="text-black bg-inherit">
           20
         </option>
       </select>

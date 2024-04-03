@@ -75,6 +75,8 @@ export const user = {
             const response = await instance.get(`${apiUrl}users/`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
+                },
+                params: {
                     page: page,
                     page_size: pageSize
                 }
