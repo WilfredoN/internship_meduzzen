@@ -33,14 +33,9 @@ function App() {
     dispatch(setIsAuth(false));
     navigate('/login');
   };
-  const fetchUserData = async (token: string) => {
+  const fetchUserData = async () => {
     try {
       dispatch(setLoading(true));
-      if (!token) {
-        navigateToLogin();
-        return;
-      }
-
       const userData = await auth.getUser();
       if (userData.error) {
         localStorage.clear();
@@ -69,7 +64,7 @@ function App() {
           return;
         }
         localStorage.setItem('access_token', token);
-        await fetchUserData(token);
+        await fetchUserData();
       } catch (error) {
         dispatch(setLoading(false));
       } finally {

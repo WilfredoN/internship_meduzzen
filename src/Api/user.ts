@@ -2,8 +2,6 @@ import User from '../Types/User';
 import { UserCreate } from '../Types/UserCreate';
 import UserUpdate from '../Types/UserUpdate';
 import instance from './api';
-const apiUrl = process.env.REACT_APP_API_URL;
-const token = localStorage.getItem('access_token');
 
 export const auth = {
     login: async (user_email: string, user_password: string) => {
@@ -23,9 +21,6 @@ export const auth = {
     getUser: async () => {
         try {
             const response = await instance.get(`auth/me/`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
             });
             console.log(response.data.result);
             return response.data.result;
@@ -35,10 +30,8 @@ export const auth = {
     },
     deleteUser: async (id: number) => {
         try {
-            const response = await instance.delete(`${apiUrl}user/${id}/`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
+            const response = await instance.delete(`user/${id}/`, {
+
             });
             console.log(response);
             return response.data;
@@ -60,10 +53,7 @@ export const user = {
     },
     updateInfo: async (userData: UserUpdate, user_id: number) => {
         try {
-            const response = await instance.put(`${apiUrl}user/${user_id}/update_info/`, userData, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
+            const response = await instance.put(`user/${user_id}/update_info/`, userData, {
             });
             console.log(response);
             return response.data;
@@ -73,10 +63,7 @@ export const user = {
     },
     updatePassword: async (user_password: string, user_password_repeat: string, userData: User) => {
         try {
-            const response = await instance.put(`${apiUrl}user/${userData.user_id}/update_password/`, { user_password, user_password_repeat }, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
+            const response = await instance.put(`user/${userData.user_id}/update_password/`, { user_password, user_password_repeat }, {
             });
             console.log(response);
             return response.data;
@@ -89,9 +76,8 @@ export const user = {
         try {
             const formData = new FormData();
             formData.append('user_avatar', avatar);
-            const response = await instance.put(`${apiUrl}user/${userData.user_id}/update_avatar/`, formData, {
+            const response = await instance.put(`user/${userData.user_id}/update_avatar/`, formData, {
                 headers: {
-                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
                 }
             });
@@ -103,10 +89,7 @@ export const user = {
     },
     getUsers: async (page: number, pageSize: number) => {
         try {
-            const response = await instance.get(`${apiUrl}users/`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+            const response = await instance.get(`users/`, {
                 params: {
                     page: page,
                     page_size: pageSize
@@ -120,11 +103,7 @@ export const user = {
     },
     getUserById: async (id: number) => {
         try {
-            const response = await instance.get(`${apiUrl}user/${id}/`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+            const response = await instance.get(`user/${id}/`,);
             console.log(response.data.result);
             return response.data.result;
         } catch (error: any) {
