@@ -8,10 +8,11 @@ export interface CellType {
 
 interface RowProps {
   item: CellType[];
+  getInfo?: () => void;
 }
 
-const Row: React.FC<RowProps> = memo(({ item }) => (
-  <tr className="border-b">
+const Row: React.FC<RowProps> = memo(({ item, getInfo }) => (
+  <tr className="border-b hover:bg-gray-700 duration-300" onClick={getInfo}>
     {item.map((cell, index) => (
       <Cell key={index} value={cell.value} />
     ))}

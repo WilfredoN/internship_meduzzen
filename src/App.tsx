@@ -33,19 +33,9 @@ function App() {
     dispatch(setIsAuth(false));
     navigate('/login');
   };
-
-  const logError = (error: any) => {
-    console.error(error);
-  };
-
-  const fetchUserData = async (token: string) => {
+  const fetchUserData = async () => {
     try {
       dispatch(setLoading(true));
-      if (!token) {
-        navigateToLogin();
-        return;
-      }
-
       const userData = await auth.getUser();
       if (userData.error) {
         localStorage.clear();
@@ -55,7 +45,6 @@ function App() {
       dispatch(setUser(userData));
       dispatch(setIsAuth(true));
     } catch (error) {
-      logError(error);
       navigateToLogin();
     } finally {
       dispatch(setLoading(false));
@@ -75,9 +64,8 @@ function App() {
           return;
         }
         localStorage.setItem('access_token', token);
-        await fetchUserData(token);
+        await fetchUserData();
       } catch (error) {
-        logError(error);
         dispatch(setLoading(false));
       } finally {
         dispatch(setLoading(false));
@@ -94,7 +82,8 @@ function App() {
       >
         <Routes>
           <Route path="*" element={<h1>404 Not Found</h1>} />
-          <Route path="/" element={<PrivateRoute />}>
+          <Route path="/" element={<About />} />
+          <Route path="" element={<PrivateRoute />}>
             <Route path="/users" element={<Users />} />
             <Route path="/companies" element={<Companies />} />
             <Route path="/profile" element={<UserProfile />} />
