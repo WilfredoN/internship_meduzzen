@@ -1,3 +1,4 @@
+import { useAuth0 } from '@auth0/auth0-react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { user as UserApi, auth } from '../../Api/user';
@@ -6,7 +7,6 @@ import { useAppSelector } from '../../Store/hooks';
 import { useAppDispatch } from '../../Store/store';
 import { clearUser } from '../../Store/userSlice';
 import User from '../../Types/User';
-import { useAuth0 } from '@auth0/auth0-react';
 type RootState = {
   user: {
     user: User | null;
