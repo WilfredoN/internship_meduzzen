@@ -1,6 +1,8 @@
 import { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { company } from '../../Api/company';
+import { useAppDispatch } from '../../Store/store';
+import { setCompany } from '../../Store/userSlice';
 interface CreateCompanyModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -13,13 +15,14 @@ const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
   const [companyName, setCompanyName] = useState('');
   const [companyDescription, setCompanyDescription] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
-
+  const dispatch = useAppDispatch();
   const handleCreate = async () => {
     const response = await company.createCompany({
       company_name: companyName,
       company_description: companyDescription,
     });
-    console.log(response);
+    console.log(response.company_id);
+    dispatch(setCompany(response));
     setIsSuccess(true);
   };
 
