@@ -57,8 +57,6 @@ const Users = () => {
         extraClasses="ml-8 mr-8"
         onClick={() => {
           setPage(page + 1);
-          console.log('Next ' + page);
-          fetchUsers();
         }}
         disabled={page === pageSize || isLastPage}
       />
@@ -68,7 +66,6 @@ const Users = () => {
         onChange={(e) => {
           setSelectedSize(Number(e.target.value));
           setPageSize(Number(e.target.value));
-          fetchUsers();
         }}
       >
         <option value={5} className="text-black bg-inherit">

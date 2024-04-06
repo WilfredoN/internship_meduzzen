@@ -5,6 +5,7 @@ import PaginationButton from '../../Components/Buttons/PaginationButton';
 import Table from '../../Components/Table/Table';
 import { updatePage } from '../../Store/paginationSlice';
 import { useAppDispatch } from '../../Store/store';
+
 const Companies = () => {
   const [companies, setCompanies] = useState([]);
   const [page, setPage] = useState(1);
@@ -16,11 +17,6 @@ const Companies = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-  };
-
-  const handleSuccess = () => {
-    // TODO: Implement success handler
-    fetchCompanies();
   };
 
   const fetchCompanies = async () => {
@@ -41,22 +37,27 @@ const Companies = () => {
   };
 
   useEffect(() => {
+    console.log('useEffect');
     fetchCompanies();
   }, [page, pageSize, selectedSize, dispatch]);
+
   return (
-    <div className="companies">
-      <button onClick={() => setIsModalOpen(true)}>Create Company</button>
-      <CreateCompanyModal
-        isOpen={isModalOpen}
-        onSuccess={handleSuccess}
-        onClose={closeModal}
-      />
+    <div className="companies max-w-screen-lg">
+      <div className="flex justify-end">
+        <button
+          className="rounded-3xl bg-blue-500 text-white w-20 h-10 flex text-center justify-center items-center hover:bg-blue-700 
+          transition-colors duration-300 ease-in-out"
+          onClick={() => setIsModalOpen(true)}
+        >
+          +
+        </button>
+      </div>
+      <CreateCompanyModal isOpen={isModalOpen} onClose={closeModal} />
       <Table data={companies} onRowClick={(id: number) => console.log(id)} />
       <PaginationButton
         label="Previous"
         onClick={() => {
           setPage(page - 1);
-          fetchCompanies();
         }}
         disabled={page === 1}
       />
@@ -66,7 +67,6 @@ const Companies = () => {
         onClick={() => {
           setPage(page + 1);
           console.log('Next ' + page);
-          fetchCompanies();
         }}
         disabled={isLastPage}
       />

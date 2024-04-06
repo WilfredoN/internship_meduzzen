@@ -1,22 +1,26 @@
-import { useState } from 'react';
-import { Dialog } from '@headlessui/react';
-
+import { Fragment, useState } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
+import { company } from '../../Api/company';
 interface CreateCompanyModalProps {
   isOpen: boolean;
-  onSuccess: () => void;
   onClose: () => void;
 }
 
 const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
   isOpen,
-  onSuccess,
   onClose,
 }) => {
+  const [companyName, setCompanyName] = useState('');
+  const [companyDescription, setCompanyDescription] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
+    const response = await company.createCompany({
+      company_name: companyName,
+      company_description: companyDescription,
+    });
+    console.log(response);
     setIsSuccess(true);
-    onSuccess();
   };
 
   const handleClose = () => {
@@ -26,49 +30,75 @@ const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
 
   return (
     <>
-      <Dialog
-        as="div"
-        className="relative z-10"
-        open={isOpen}
-        onClose={handleClose}
-      >
-        <div className="fixed inset-0 overflow-y-auto ">
-          <div className="flex min-h-full items-center justify-center p-4 text-center">
-            <Dialog.Panel className="flex justify-between flex-col w-full min-h-64 mb-24 max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-              <Dialog.Title
-                as="h3"
-                className="text-3xl text-center font-medium leading-6 text-gray-900"
+      <Transition appear show={isOpen} as={Fragment}>
+        <Dialog
+          as="div"
+          className="relative z-10"
+          open={isOpen}
+          onClose={handleClose}
+        >
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black/75" />
+          </Transition.Child>
+          <div className="fixed inset-0 overflow-y-auto ">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
               >
-                Create Company
-              </Dialog.Title>
-              <p>Company Name</p>
-              <input
-                type="text"
-                className="border border-gray-300 rounded-md p-2 mb-2"
-              />
-              <p>Company Description</p>
-              <input
-                type="text"
-                className="border border-gray-300 rounded-md p-2 mb-2"
-              />
-              <div className="flex justify-evenly ">
-                <button
-                  onClick={handleCreate}
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                >
-                  Create
-                </button>
-                <button
-                  onClick={handleClose}
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                >
-                  Close
-                </button>
-              </div>
-            </Dialog.Panel>
+                <Dialog.Panel className="flex justify-between flex-col w-full min-h-64 mb-24 max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-3xl text-center font-medium leading-6 text-gray-900 mb-8"
+                  >
+                    Create Company
+                  </Dialog.Title>
+                  <p className="text-xl">Company Name</p>
+                  <input
+                    type="text"
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                    className="border border-gray-300 rounded-md p-2 mb-2"
+                  />
+                  <p className="text-xl">Company Description</p>
+                  <textarea
+                    value={companyDescription}
+                    onChange={(e) => setCompanyDescription(e.target.value)}
+                    className="border border-gray-300 rounded-md p-2 mb-2"
+                  />
+                  <div className="flex justify-evenly ">
+                    <button
+                      onClick={handleCreate}
+                      className="bg-green-500 hover:bg-green-600 text-white text-2xl font-bold py-2 px-4 rounded-full duration-150"
+                    >
+                      Create
+                    </button>
+                    <button
+                      onClick={handleClose}
+                      className="bg-red-500 hover:bg-red-600 text-white text-2xl font-bold py-2 px-4 rounded-full duration-150"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
           </div>
-        </div>
-      </Dialog>
+        </Dialog>
+      </Transition>
       {isSuccess && <p>Company created successfully!</p>}
     </>
   );
