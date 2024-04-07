@@ -30,7 +30,7 @@ const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
     setIsSuccess(false);
     onClose();
   };
-
+  //TODO: Make universal modal component
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
