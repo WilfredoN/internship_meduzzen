@@ -25,7 +25,7 @@ const Companies = () => {
       setCompanies(response);
       dispatch(updatePage(page));
       console.log(`page: ${page}, pageSize: ${pageSize}`);
-
+      console.log(response);
       if (response.length < pageSize) {
         setIsLastPage(true);
       } else {
@@ -39,10 +39,10 @@ const Companies = () => {
   useEffect(() => {
     console.log('useEffect');
     fetchCompanies();
-  }, [page, pageSize, selectedSize, dispatch]);
-
+  }, [page, pageSize, selectedSize, dispatch, isLastPage]);
   return (
     <div className="companies max-w-screen-lg">
+      <Table data={companies} onRowClick={(id: number) => console.log(id)} />
       <div className="flex justify-end">
         <button
           className="rounded-3xl bg-blue-500 text-white w-20 h-10 flex text-center justify-center items-center hover:bg-blue-700 
@@ -53,7 +53,6 @@ const Companies = () => {
         </button>
       </div>
       <CreateCompanyModal isOpen={isModalOpen} onClose={closeModal} />
-      <Table data={companies} onRowClick={(id: number) => console.log(id)} />
       <PaginationButton
         label="Previous"
         onClick={() => {

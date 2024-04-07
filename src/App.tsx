@@ -9,7 +9,8 @@ import Header from './Components/Header/Header';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Suspense, lazy, useEffect } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
-import { auth } from './Api/user';
+import { user as UserAPI, auth } from './Api/user';
+import CompanyProfile from './Pages/Company_Profile/CompanyProfile';
 import { useAppSelector } from './Store/hooks';
 import { useAppDispatch } from './Store/store';
 import { setIsAuth, setLoading, setUser } from './Store/userSlice';
@@ -37,13 +38,19 @@ function App() {
     try {
       dispatch(setLoading(true));
       const userData = await auth.getUser();
+      const companies = await UserAPI.getUserCompany(userData.user_id);
       if (userData.error) {
         localStorage.clear();
         navigateToLogin();
         return;
       }
-      dispatch(setUser(userData));
+      const combinedData = {
+        ...userData,
+        companies,
+      };
+      dispatch(setUser(combinedData));
       dispatch(setIsAuth(true));
+      console.log(companies);
     } catch (error) {
       navigateToLogin();
     } finally {
@@ -87,6 +94,7 @@ function App() {
             <Route path="/users" element={<Users />} />
             <Route path="/companies" element={<Companies />} />
             <Route path="/profile" element={<UserProfile />} />
+            <Route path="/company" element={<CompanyProfile />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

@@ -1,4 +1,4 @@
-import { Company } from './../Types/Company';
+import { Company, CompanyDetailed } from './../Types/Company';
 import instance from "./api";
 
 
@@ -11,6 +11,7 @@ export const info = {
                     page_size: pageSize,
                 }
             });
+            console.log(response.data.result.companies);
             return response.data.result.companies;
         } catch (error: any) {
             return { error: error.message };
@@ -38,12 +39,17 @@ export const company = {
             return { error: error.message };
         }
     },
-    updateCompany: async (companyId: number, companyName: string, companyDescription: string) => {
+    updateCompany: async (company: CompanyDetailed) => {
         try {
-            const response = await instance.put(`company/${companyId}/update_info/`, {
-                company_name: companyName,
-                company_description: companyDescription,
+            const response = await instance.put(`company/${company.company_id}/update_info/`, {
+                company_name: company.company_name,
+                company_description: company.company_description,
+                company_city: company.company_city,
+                company_phone: company.company_phone,
+                company_links: company.company_links,
+                company_title: company.company_title,
             });
+            console.log(response.data.result);
             return response.data.result;
         } catch (error: any) {
             return { error: error.message };

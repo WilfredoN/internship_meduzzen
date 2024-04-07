@@ -30,14 +30,11 @@ const userSlice = createSlice({
         setLoading: (state, action) => {
             state.loading = action.payload;
         },
-        setCompany: (state, action) => {
-            state.company = action.payload;
-        },
     },
 });
 
 
 export const { setUser, clearUser, setIsAuth,
-    setLoading, setSelectedUser, setCompany } = userSlice.actions;
+    setLoading, setSelectedUser, } = userSlice.actions;
 
 export default userSlice.reducer;

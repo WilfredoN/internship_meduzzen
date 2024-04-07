@@ -1,3 +1,5 @@
+import { CompanyDetailed } from "./Company";
+
 type User = {
     user_id: number;
     user_email: string;
@@ -9,6 +11,7 @@ type User = {
     user_phone: string;
     user_links: string[];
     is_superuser: boolean;
+    companies: CompanyDetailed[] | null;
 };
 
 export default User;
