@@ -1,3 +1,4 @@
+import { resolveNaptr } from 'dns';
 import { Company, CompanyDetailed } from './../Types/Company';
 import instance from "./api";
 
@@ -49,6 +50,7 @@ export const company = {
                 company_links: company.company_links,
                 company_title: company.company_title,
             });
+            console.log(response);
             console.log(response.data.result);
             return response.data.result;
         } catch (error: any) {

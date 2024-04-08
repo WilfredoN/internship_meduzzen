@@ -11,7 +11,7 @@ type User = {
     user_phone: string;
     user_links: string[];
     is_superuser: boolean;
-    companies: CompanyDetailed[] | null;
+    companies: CompanyDetailed[];
 };
 
 export default User;

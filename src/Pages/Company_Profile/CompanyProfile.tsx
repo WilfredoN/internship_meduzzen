@@ -14,9 +14,7 @@ type RootState = {
 
 const CompanyProfile: React.FC = () => {
   const user = useAppSelector((state: RootState) => state.user.user);
-  const companies = useAppSelector(
-    (state: RootState) => state.user.user?.companies || [],
-  );
+  const companies = user?.companies ?? [];
   const dispatch = useAppDispatch();
   const [editableField, setEditableField] = useState<string | null>(null);
   const [newInfo, setNewInfo] = useState<{ [key: string]: string }>({});

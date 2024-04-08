@@ -9,6 +9,7 @@ import Header from './Components/Header/Header';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Suspense, lazy, useEffect } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
+import { company as CompanyAPI } from './Api/company';
 import { user as UserAPI, auth } from './Api/user';
 import CompanyProfile from './Pages/Company_Profile/CompanyProfile';
 import { useAppSelector } from './Store/hooks';
@@ -38,7 +39,13 @@ function App() {
     try {
       dispatch(setLoading(true));
       const userData = await auth.getUser();
-      const companies = await UserAPI.getUserCompany(userData.user_id);
+      const companies_list = await UserAPI.getUserCompany(userData.user_id);
+      const companies_id = companies_list.map(
+        (company: { company_id: number }) => company.company_id,
+      );
+      const companies = await Promise.all(
+        companies_id.map((id: number) => CompanyAPI.getCompany(id)),
+      );
       if (userData.error) {
         localStorage.clear();
         navigateToLogin();
@@ -51,6 +58,7 @@ function App() {
       dispatch(setUser(combinedData));
       dispatch(setIsAuth(true));
       console.log(companies);
+      console.log(combinedData);
     } catch (error) {
       navigateToLogin();
     } finally {
