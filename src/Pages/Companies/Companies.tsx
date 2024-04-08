@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { info } from '../../Api/company';
-import CreateCompanyModal from '../../Components/Modal/Modal';
+import CreateCompanyModal from '../../Components/Modal/CreateCompanyModal';
 import PaginationButton from '../../Components/Buttons/PaginationButton';
 import Table from '../../Components/Table/Table';
 import { updatePage } from '../../Store/paginationSlice';
