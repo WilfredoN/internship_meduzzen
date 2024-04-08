@@ -9,7 +9,9 @@ import Header from './Components/Header/Header';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Suspense, lazy, useEffect } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
-import { auth } from './Api/user';
+import { company as CompanyAPI } from './Api/company';
+import { user as UserAPI, auth } from './Api/user';
+import CompanyProfile from './Pages/Company_Profile/CompanyProfile';
 import { useAppSelector } from './Store/hooks';
 import { useAppDispatch } from './Store/store';
 import { setIsAuth, setLoading, setUser } from './Store/userSlice';
@@ -37,13 +39,26 @@ function App() {
     try {
       dispatch(setLoading(true));
       const userData = await auth.getUser();
+      const companies_list = await UserAPI.getUserCompany(userData.user_id);
+      const companies_id = companies_list.map(
+        (company: { company_id: number }) => company.company_id,
+      );
+      const companies = await Promise.all(
+        companies_id.map((id: number) => CompanyAPI.getCompany(id)),
+      );
       if (userData.error) {
         localStorage.clear();
         navigateToLogin();
         return;
       }
-      dispatch(setUser(userData));
+      const combinedData = {
+        ...userData,
+        companies,
+      };
+      dispatch(setUser(combinedData));
       dispatch(setIsAuth(true));
+      console.log(companies);
+      console.log(combinedData);
     } catch (error) {
       navigateToLogin();
     } finally {
@@ -87,6 +102,7 @@ function App() {
             <Route path="/users" element={<Users />} />
             <Route path="/companies" element={<Companies />} />
             <Route path="/profile" element={<UserProfile />} />
+            <Route path="/company" element={<CompanyProfile />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

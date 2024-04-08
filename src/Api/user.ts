@@ -109,5 +109,14 @@ export const user = {
         } catch (error: any) {
             return { error: error.message };
         }
-    }
+    },
+    getUserCompany: async (id: number) => {
+        try {
+            const response = await instance.get(`user/${id}/companies_list/`,);
+            console.log(response.data.result.companies);
+            return response.data.result.companies;
+        } catch (error: any) {
+            return { error: error.message };
+        }
+    },
 };

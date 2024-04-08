@@ -1,26 +1,26 @@
-import { useAuth0 } from '@auth0/auth0-react';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router';
-import { user as UserApi, auth } from '../../Api/user';
+import { company as CompanyAPI } from '../../Api/company';
 import InfoChangeButton from '../../Components/Buttons/InfoChange';
 import { useAppSelector } from '../../Store/hooks';
 import { useAppDispatch } from '../../Store/store';
-import { clearUser } from '../../Store/userSlice';
+import { CompanyDetailed } from '../../Types/Company';
 import User from '../../Types/User';
 type RootState = {
   user: {
     user: User | null;
-    isAuth: boolean;
+    loading: boolean;
   };
 };
-const UserProfile: React.FC = () => {
+
+const CompanyProfile: React.FC = () => {
   const user = useAppSelector((state: RootState) => state.user.user);
+  const companies = user?.companies ?? [];
   const dispatch = useAppDispatch();
-  const { logout } = useAuth0();
   const [editableField, setEditableField] = useState<string | null>(null);
   const [newInfo, setNewInfo] = useState<{ [key: string]: string }>({});
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const navigate = useNavigate();
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+
   const handleFieldChange = (field: string, value: string) => {
     setNewInfo({ ...newInfo, [field]: value });
   };
@@ -34,90 +34,101 @@ const UserProfile: React.FC = () => {
   };
 
   const handleNewInfo = async () => {
-    if (user) {
-      const updatedUser = { ...user, ...newInfo };
-      await UserApi.updateInfo(updatedUser as User, user.user_id);
-      dispatch({ type: 'user/updateUser', payload: updatedUser });
+    if (companies) {
+      const updatedCompany = { ...companies[currentIndex], ...newInfo };
+      await CompanyAPI.updateCompany(updatedCompany as CompanyDetailed);
+      dispatch({ type: 'user/updateCompany', payload: updatedCompany });
       setIsEditing(false);
       setNewInfo({});
     }
   };
+
   const handleDelete = async () => {
-    if (user) {
-      await auth.deleteUser(user.user_id);
-      dispatch(clearUser());
-      localStorage.clear();
-      logout({});
-      navigate('/login');
+    if (companies) {
+      await CompanyAPI.deleteCompany(companies[currentIndex].company_id);
     }
   };
+
   return (
     <div className="max-w-3xl h-full flex flex-row items-center space-y-4 bg-slate-600 rounded-2xl">
-      <img
-        src={user?.user_avatar || 'https://via.placeholder.com/150'}
-        alt="user avatar"
-        className="ml-16 w-32 h-32 rounded-full"
-      />
       <div className="flex flex-col text-left items-left w-full h-full p-4 ml-6">
         <div className="text-3xl font-bold mb-3">
-          {user?.user_firstname} {user?.user_lastname}
+          {companies[currentIndex]?.company_name ?? 'No name'}
         </div>
-        <div className="text-3xl mb-4">{user?.user_email}</div>
         <div className="text-2xl flex-row">
-          {isEditing && editableField === 'user_status' ? (
+          {isEditing && editableField === 'company_description' ? (
             <input
               type="text"
-              value={newInfo['user_status'] || ''}
-              onChange={(e) => handleFieldChange('user_status', e.target.value)}
+              value={newInfo['company_description'] || ''}
+              onChange={(e) =>
+                handleFieldChange('company_description', e.target.value)
+              }
               className="text-black text-2xl flex-row bg-white rounded-lg px-4 py-2"
             />
           ) : (
-            newInfo?.user_status || user?.user_status || 'No status'
+            newInfo?.company_description ||
+            companies[currentIndex]?.company_description ||
+            'No description'
           )}
           <InfoChangeButton
             change={() =>
-              handleButtonClick('user_status', user?.user_status || '')
+              handleButtonClick(
+                'company_description',
+                companies[currentIndex]?.company_description || '',
+              )
             }
           />
         </div>
         <div className="text-2xl flex-row">
-          {isEditing && editableField === 'user_city' ? (
+          {isEditing && editableField === 'company_title' ? (
             <input
               type="text"
-              value={newInfo['user_city'] || ''}
-              onChange={(e) => handleFieldChange('user_city', e.target.value)}
+              value={newInfo['company_title'] || ''}
+              onChange={(e) =>
+                handleFieldChange('company_title', e.target.value)
+              }
               className="text-black text-2xl flex-row bg-white rounded-lg px-4 py-2"
             />
           ) : (
-            newInfo?.user_city || user?.user_city || 'No city'
-          )}
-          <InfoChangeButton
-            change={() => handleButtonClick('user_city', user?.user_city || '')}
-          />
-        </div>
-        <div className="text-2xl flex-row">
-          {isEditing && editableField === 'user_phone' ? (
-            <input
-              type="text"
-              value={newInfo['user_phone'] || ''}
-              onChange={(e) => handleFieldChange('user_phone', e.target.value)}
-              className="text-black text-2xl flex-row bg-white rounded-lg px-4 py-2"
-            />
-          ) : (
-            newInfo?.user_phone || user?.user_phone || 'No phone'
+            newInfo?.company_title ||
+            companies[currentIndex]?.company_title ||
+            'No title'
           )}
           <InfoChangeButton
             change={() =>
-              handleButtonClick('user_phone', user?.user_phone || '')
+              handleButtonClick(
+                'company_title',
+                companies[currentIndex]?.company_title || '',
+              )
             }
           />
         </div>
         <div className="text-2xl flex-row">
-          {user?.user_links || 'No links'}
-          {/* <InfoChangeButton change={() => handleFieldChange('user_links', user?.user_links || '')} /> */}
+          {isEditing && editableField === 'company_phone' ? (
+            <input
+              type="text"
+              value={newInfo['company_phone'] || ''}
+              onChange={(e) =>
+                handleFieldChange('company_phone', e.target.value)
+              }
+              className="text-black text-2xl flex-row bg-white rounded-lg px-4 py-2"
+            />
+          ) : (
+            newInfo?.company_phone ||
+            companies[currentIndex]?.company_phone ||
+            'No phone'
+          )}
+          <InfoChangeButton
+            change={() =>
+              handleButtonClick(
+                'company_phone',
+                companies[currentIndex]?.company_phone || '',
+              )
+            }
+          />
         </div>
         <div className="text-2xl">
-          {user?.is_superuser ? 'Superuser' : 'Regular user'}
+          {companies[currentIndex]?.company_links?.join(', ') || 'No links'}
         </div>
         <div className="flex justify-center items-center mt-4">
           <button
@@ -138,4 +149,4 @@ const UserProfile: React.FC = () => {
   );
 };
 
-export default UserProfile;
+export default CompanyProfile;

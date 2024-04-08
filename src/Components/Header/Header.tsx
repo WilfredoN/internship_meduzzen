@@ -5,7 +5,6 @@ import { useAppDispatch } from '../../Store/store';
 import { clearUser } from '../../Store/userSlice';
 import User from '../../Types/User';
 import HeaderButton from '../Buttons/HeaderButton';
-import './Header.css';
 type RootState = {
   user: {
     user: User | null;
@@ -25,7 +24,7 @@ const Header = () => {
   };
 
   return (
-    <nav className="header flex flex-row justify-between items-center space-x-4 p-12 mt-6 mb-16 bg-gray-800 text-white rounded-full h-16 max-w-screen-lg w-full">
+    <nav className="header flex flex-row justify-between items-center space-x-12 p-12 mt-6 mb-16 bg-gray-800 text-white rounded-full h-16 max-w-screen-xl w-full">
       <div className="flex space-x-4">
         <Link className="hover:underline" to="/about">
           About
@@ -40,12 +39,15 @@ const Header = () => {
       <div className="flex space-x-4">
         {isAuth ? (
           <div className="flex flex-row justify-center items-center">
-            <span>
-              {user?.user_firstname} {user?.user_lastname}
-            </span>
-            <Link className="mx-6 hover:underline" to="/profile">
-              Profile
-            </Link>
+            <span>{user?.user_firstname}</span>
+            <div className="flex flex-col items-center justify-center">
+              <Link className="mx-6 hover:underline" to="/profile">
+                Profile
+              </Link>
+              <Link className="mx-6 hover:underline" to="/company">
+                Company
+              </Link>
+            </div>
             <button
               className="ml-6 mr-0 text-xl bg-slate-600 px-4 py-2 rounded-full hover:bg-red-800 transition-colors duration-300 ease-in-out"
               onClick={handleLogout}

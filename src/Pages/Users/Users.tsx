@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { user as UserApi } from '../../Api/user';
+import PaginationButton from '../../Components/Buttons/PaginationButton';
 import Table from '../../Components/Table/Table';
 import { updatePage } from '../../Store/paginationSlice';
+import { useAppDispatch } from '../../Store/store';
 import { setSelectedUser } from '../../Store/userSlice';
 
 const Users = () => {
@@ -10,7 +11,7 @@ const Users = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [selectedSize, setSelectedSize] = useState(10);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [isLastPage, setIsLastPage] = useState(false);
   const getUserInfo = async (id: number) => {
     const user = await UserApi.getUserById(id);
@@ -43,34 +44,28 @@ const Users = () => {
   ) : (
     <div className="users">
       <Table data={users} onRowClick={(id: number) => getUserInfo(id)} />
-      <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+      <PaginationButton
+        label="Previous"
         onClick={() => {
           setPage(page - 1);
           fetchUsers();
         }}
         disabled={page === 1}
-      >
-        Previous
-      </button>
-      <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full ml-8 mr-8"
+      />
+      <PaginationButton
+        label="Next"
+        extraClasses="ml-8 mr-8"
         onClick={() => {
           setPage(page + 1);
-          console.log('Next ' + page);
-          fetchUsers();
         }}
-        disabled={page === pageSize}
-      >
-        Next
-      </button>
+        disabled={page === pageSize || isLastPage}
+      />
       <select
         className="border border-gray-300 rounded-md text-black"
         value={selectedSize || 10}
         onChange={(e) => {
           setSelectedSize(Number(e.target.value));
           setPageSize(Number(e.target.value));
-          fetchUsers();
         }}
       >
         <option value={5} className="text-black bg-inherit">
