@@ -7,6 +7,7 @@ import { useAppSelector } from '../../Store/hooks';
 import { useAppDispatch } from '../../Store/store';
 import { clearUser } from '../../Store/userSlice';
 import User from '../../Types/User';
+import EditableField from '../../Components/Fields/EditableField';
 type RootState = {
   user: {
     user: User | null;
@@ -64,52 +65,36 @@ const UserProfile: React.FC = () => {
         </div>
         <div className="text-3xl mb-4">{user?.user_email}</div>
         <div className="text-2xl flex-row">
-          {isEditing && editableField === 'user_status' ? (
-            <input
-              type="text"
-              value={newInfo['user_status'] || ''}
-              onChange={(e) => handleFieldChange('user_status', e.target.value)}
-              className="text-black text-2xl flex-row bg-white rounded-lg px-4 py-2"
-            />
-          ) : (
-            newInfo?.user_status || user?.user_status || 'No status'
-          )}
-          <InfoChangeButton
-            change={() =>
-              handleButtonClick('user_status', user?.user_status || '')
-            }
+          <EditableField
+            label="user_status"
+            value={user?.user_status || ''}
+            isEditing={isEditing}
+            editableField={editableField || ''}
+            newInfo={newInfo}
+            handleFieldChange={handleFieldChange}
+            handleButtonClick={handleButtonClick}
           />
         </div>
         <div className="text-2xl flex-row">
-          {isEditing && editableField === 'user_city' ? (
-            <input
-              type="text"
-              value={newInfo['user_city'] || ''}
-              onChange={(e) => handleFieldChange('user_city', e.target.value)}
-              className="text-black text-2xl flex-row bg-white rounded-lg px-4 py-2"
-            />
-          ) : (
-            newInfo?.user_city || user?.user_city || 'No city'
-          )}
-          <InfoChangeButton
-            change={() => handleButtonClick('user_city', user?.user_city || '')}
+          <EditableField
+            label="user_city"
+            value={user?.user_city || ''}
+            isEditing={isEditing}
+            editableField={editableField || ''}
+            newInfo={newInfo}
+            handleFieldChange={handleFieldChange}
+            handleButtonClick={handleButtonClick}
           />
         </div>
         <div className="text-2xl flex-row">
-          {isEditing && editableField === 'user_phone' ? (
-            <input
-              type="text"
-              value={newInfo['user_phone'] || ''}
-              onChange={(e) => handleFieldChange('user_phone', e.target.value)}
-              className="text-black text-2xl flex-row bg-white rounded-lg px-4 py-2"
-            />
-          ) : (
-            newInfo?.user_phone || user?.user_phone || 'No phone'
-          )}
-          <InfoChangeButton
-            change={() =>
-              handleButtonClick('user_phone', user?.user_phone || '')
-            }
+          <EditableField
+            label="user_city"
+            value={user?.user_city || ''}
+            isEditing={isEditing}
+            editableField={editableField || ''}
+            newInfo={newInfo}
+            handleFieldChange={handleFieldChange}
+            handleButtonClick={handleButtonClick}
           />
         </div>
         <div className="text-2xl flex-row">

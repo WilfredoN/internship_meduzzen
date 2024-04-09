@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { company as CompanyAPI } from '../../Api/company';
 import InfoChangeButton from '../../Components/Buttons/InfoChange';
+import EditableField from '../../Components/Fields/EditableField';
 import { useAppSelector } from '../../Store/hooks';
 import { useAppDispatch } from '../../Store/store';
 import { CompanyDetailed } from '../../Types/Company';
@@ -56,79 +57,48 @@ const CompanyProfile: React.FC = () => {
           {companies[currentIndex]?.company_name ?? 'No name'}
         </div>
         <div className="text-2xl flex-row">
-          {isEditing && editableField === 'company_description' ? (
-            <input
-              type="text"
-              value={newInfo['company_description'] || ''}
-              onChange={(e) =>
-                handleFieldChange('company_description', e.target.value)
-              }
-              className="text-black text-2xl flex-row bg-white rounded-lg px-4 py-2"
-            />
-          ) : (
-            newInfo?.company_description ||
-            companies[currentIndex]?.company_description ||
-            'No description'
-          )}
-          <InfoChangeButton
-            change={() =>
-              handleButtonClick(
-                'company_description',
-                companies[currentIndex]?.company_description || '',
-              )
-            }
+          <EditableField
+            label="company_description"
+            value={companies[currentIndex]?.company_description || ''}
+            isEditing={isEditing}
+            editableField={editableField || ''}
+            newInfo={newInfo}
+            handleFieldChange={handleFieldChange}
+            handleButtonClick={handleButtonClick}
           />
         </div>
         <div className="text-2xl flex-row">
-          {isEditing && editableField === 'company_title' ? (
-            <input
-              type="text"
-              value={newInfo['company_title'] || ''}
-              onChange={(e) =>
-                handleFieldChange('company_title', e.target.value)
-              }
-              className="text-black text-2xl flex-row bg-white rounded-lg px-4 py-2"
-            />
-          ) : (
-            newInfo?.company_title ||
-            companies[currentIndex]?.company_title ||
-            'No title'
-          )}
-          <InfoChangeButton
-            change={() =>
-              handleButtonClick(
-                'company_title',
-                companies[currentIndex]?.company_title || '',
-              )
-            }
+          <EditableField
+            label="company_title"
+            value={companies[currentIndex]?.company_title || ''}
+            isEditing={isEditing}
+            editableField={editableField || ''}
+            newInfo={newInfo}
+            handleFieldChange={handleFieldChange}
+            handleButtonClick={handleButtonClick}
           />
         </div>
         <div className="text-2xl flex-row">
-          {isEditing && editableField === 'company_phone' ? (
-            <input
-              type="text"
-              value={newInfo['company_phone'] || ''}
-              onChange={(e) =>
-                handleFieldChange('company_phone', e.target.value)
-              }
-              className="text-black text-2xl flex-row bg-white rounded-lg px-4 py-2"
-            />
-          ) : (
-            newInfo?.company_phone ||
-            companies[currentIndex]?.company_phone ||
-            'No phone'
-          )}
-          <InfoChangeButton
-            change={() =>
-              handleButtonClick(
-                'company_phone',
-                companies[currentIndex]?.company_phone || '',
-              )
-            }
+          <EditableField
+            label="company_phone"
+            value={companies[currentIndex]?.company_phone || ''}
+            isEditing={isEditing}
+            editableField={editableField || ''}
+            newInfo={newInfo}
+            handleFieldChange={handleFieldChange}
+            handleButtonClick={handleButtonClick}
           />
         </div>
         <div className="text-2xl">
-          {companies[currentIndex]?.company_links?.join(', ') || 'No links'}
+          {/* <EditableField
+            label="company_links"
+            value={companies[currentIndex]?.company_links || ''}
+            isEditing={isEditing}
+            editableField={editableField || ''}
+            newInfo={newInfo}
+            handleFieldChange={handleFieldChange}
+            handleButtonClick={handleButtonClick}
+          /> */}
         </div>
         <div className="flex justify-center items-center mt-4">
           <button

@@ -45,7 +45,13 @@ const Users = () => {
   ) : (
     <div className="users">
       <Table data={users} onRowClick={(id: number) => getUserInfo(id)} />
-      <Pagination page={page} isLastPage={isLastPage} setPage={setPage} />
+      <Pagination
+        nextSymbol="Next"
+        prevSymbol="Prev"
+        page={page}
+        isLastPage={isLastPage}
+        setPage={setPage}
+      />
       <select
         className="border border-gray-300 rounded-md text-black"
         value={selectedSize || 10}

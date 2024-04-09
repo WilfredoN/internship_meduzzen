@@ -56,7 +56,13 @@ const Companies = () => {
       </div>
       <Table data={companies} onRowClick={(id: number) => console.log(id)} />
       <CreateCompanyModal isOpen={isModalOpen} onClose={closeModal} />
-      <Pagination page={page} isLastPage={isLastPage} setPage={setPage} />
+      <Pagination
+        nextSymbol="Next"
+        prevSymbol="Prev"
+        page={page}
+        isLastPage={isLastPage}
+        setPage={setPage}
+      />
     </div>
   );
 };
