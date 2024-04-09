@@ -7,6 +7,7 @@ interface PaginationProps {
   setPage: (page: number) => void;
   prevSymbol: string;
   nextSymbol: string;
+  disable_index: number;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
@@ -15,13 +16,14 @@ const Pagination: React.FC<PaginationProps> = ({
   setPage,
   prevSymbol,
   nextSymbol,
+  disable_index,
 }) => {
   return (
     <div>
       <PaginationButton
         label={prevSymbol}
         onClick={() => setPage(page - 1)}
-        disabled={page === 1}
+        disabled={page === disable_index}
       />
       <PaginationButton
         label={nextSymbol}

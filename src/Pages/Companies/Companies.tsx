@@ -62,6 +62,7 @@ const Companies = () => {
         page={page}
         isLastPage={isLastPage}
         setPage={setPage}
+        disable_index={0}
       />
     </div>
   );

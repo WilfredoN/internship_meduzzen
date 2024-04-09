@@ -51,6 +51,7 @@ const Users = () => {
         page={page}
         isLastPage={isLastPage}
         setPage={setPage}
+        disable_index={1}
       />
       <select
         className="border border-gray-300 rounded-md text-black"

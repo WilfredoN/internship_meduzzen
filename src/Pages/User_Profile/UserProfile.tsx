@@ -2,12 +2,11 @@ import { useAuth0 } from '@auth0/auth0-react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { user as UserApi, auth } from '../../Api/user';
-import InfoChangeButton from '../../Components/Buttons/InfoChange';
+import EditableField from '../../Components/Fields/EditableField';
 import { useAppSelector } from '../../Store/hooks';
 import { useAppDispatch } from '../../Store/store';
 import { clearUser } from '../../Store/userSlice';
 import User from '../../Types/User';
-import EditableField from '../../Components/Fields/EditableField';
 type RootState = {
   user: {
     user: User | null;

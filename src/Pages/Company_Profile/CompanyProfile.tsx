@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { company as CompanyAPI } from '../../Api/company';
-import InfoChangeButton from '../../Components/Buttons/InfoChange';
 import EditableField from '../../Components/Fields/EditableField';
+import Pagination from '../../Components/Pagination';
 import { useAppSelector } from '../../Store/hooks';
 import { useAppDispatch } from '../../Store/store';
 import { CompanyDetailed } from '../../Types/Company';
@@ -20,7 +20,7 @@ const CompanyProfile: React.FC = () => {
   const [editableField, setEditableField] = useState<string | null>(null);
   const [newInfo, setNewInfo] = useState<{ [key: string]: string }>({});
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleFieldChange = (field: string, value: string) => {
     setNewInfo({ ...newInfo, [field]: value });
@@ -34,7 +34,7 @@ const CompanyProfile: React.FC = () => {
     }
   };
 
-  const handleNewInfo = async () => {
+  const handleUpdateInfo = async () => {
     if (companies) {
       const updatedCompany = { ...companies[currentIndex], ...newInfo };
       await CompanyAPI.updateCompany(updatedCompany as CompanyDetailed);
@@ -43,7 +43,10 @@ const CompanyProfile: React.FC = () => {
       setNewInfo({});
     }
   };
-
+  useEffect(() => {
+    console.log('companies:', companies);
+    console.log('page', currentIndex);
+  });
   const handleDelete = async () => {
     if (companies) {
       await CompanyAPI.deleteCompany(companies[currentIndex].company_id);
@@ -102,7 +105,7 @@ const CompanyProfile: React.FC = () => {
         </div>
         <div className="flex justify-center items-center mt-4">
           <button
-            onClick={handleNewInfo}
+            onClick={handleUpdateInfo}
             className="w-32 mr-4 bg-green-500 text-white text-2xl px-4 py-2 rounded-full hover:bg-green-700 duration-150"
           >
             Confirm
@@ -113,6 +116,16 @@ const CompanyProfile: React.FC = () => {
           >
             Delete
           </button>
+        </div>
+        <div className="mt-8 w-full flex flex-row items-center justify-center">
+          <Pagination
+            page={currentIndex}
+            isLastPage={currentIndex === companies.length - 1}
+            setPage={setCurrentIndex}
+            prevSymbol="<"
+            nextSymbol=">"
+            disable_index={0}
+          />
         </div>
       </div>
     </div>
