@@ -57,8 +57,6 @@ function App() {
       };
       dispatch(setUser(combinedData));
       dispatch(setIsAuth(true));
-      console.log(companies);
-      console.log(combinedData);
     } catch (error) {
       navigateToLogin();
     } finally {
@@ -75,7 +73,7 @@ function App() {
           (await getAccessTokenSilently()) ||
           null;
         if (!token) {
-          console.log('No token found');
+          console.error('No token found');
           return;
         }
         localStorage.setItem('access_token', token);

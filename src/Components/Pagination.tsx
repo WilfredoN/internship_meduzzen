@@ -24,10 +24,10 @@ const Pagination: React.FC<PaginationProps> = ({
         label={prevSymbol}
         onClick={() => setPage(page - 1)}
         disabled={page === disable_index}
+        extraClasses="mr-2"
       />
       <PaginationButton
         label={nextSymbol}
-        extraClasses="ml-8 mr-8"
         onClick={() => setPage(page + 1)}
         disabled={isLastPage}
       />

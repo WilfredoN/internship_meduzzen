@@ -54,8 +54,18 @@ const CompanyProfile: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl h-full flex flex-row items-center space-y-4 bg-slate-600 rounded-2xl">
-      <div className="flex flex-col text-left items-left w-full h-full p-4 ml-6">
+    <div className="max-w-3xl h-full flex flex-col items-center justify-center space-y-4  ">
+      <div>
+        <Pagination
+          page={currentIndex}
+          isLastPage={currentIndex === companies.length - 1}
+          setPage={setCurrentIndex}
+          prevSymbol="<"
+          nextSymbol=">"
+          disable_index={0}
+        />
+      </div>
+      <div className="flex flex-col text-left items-left bg-slate-600 rounded-2xl max-w-2xl min-w-96 h-full p-4 ml-6">
         <div className="text-3xl font-bold mb-3">
           {companies[currentIndex]?.company_name ?? 'No name'}
         </div>
@@ -117,16 +127,7 @@ const CompanyProfile: React.FC = () => {
             Delete
           </button>
         </div>
-        <div className="mt-8 w-full flex flex-row items-center justify-center">
-          <Pagination
-            page={currentIndex}
-            isLastPage={currentIndex === companies.length - 1}
-            setPage={setCurrentIndex}
-            prevSymbol="<"
-            nextSymbol=">"
-            disable_index={0}
-          />
-        </div>
+        <div className="mt-8 w-full flex flex-row items-center justify-center"></div>
       </div>
     </div>
   );

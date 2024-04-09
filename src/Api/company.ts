@@ -18,6 +18,15 @@ export const info = {
             return { error: error.message };
         }
     },
+    getCompanyById: async (companyId: string) => {
+        try {
+            const response = await instance.get(`company/${companyId}/`);
+            console.log(response.data.result);
+            return response.data.result;
+        } catch (error: any) {
+            return { error: error.message };
+        }
+    },
 }
 export const company = {
     createCompany: async (company: Company) => {

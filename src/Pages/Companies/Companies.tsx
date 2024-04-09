@@ -14,8 +14,8 @@ const Companies = () => {
   const companies = useAppSelector((state) => state.companies.companies);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [selectedSize, setSelectedSize] = useState(10);
   const dispatch = useAppDispatch();
+  const [searchTerm, setSearchTerm] = useState('');
   const [isLastPage, setIsLastPage] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -39,13 +39,54 @@ const Companies = () => {
       console.error('Error fetching companies:', error);
     }
   }, [page, pageSize, dispatch]);
+  //FIXME: This function is not working as expected
+  /*
+Objects are not valid as a React child (found: object with keys
+   {user_id, user_email, user_firstname, user_lastname, user_avatar}).
+ If you meant to render a collection of children, use an array instead.
+  */
+
+  const fetchCompanyById = useCallback(async () => {
+    try {
+      const response = await info.getCompanyById(searchTerm);
+      dispatch(setCompanies([response]));
+      dispatch(updatePage(1));
+      console.log(response);
+    } catch (error) {
+      console.error('Error fetching company:', error);
+    }
+  }, [searchTerm, dispatch]);
 
   useEffect(() => {
     fetchCompanies();
   }, [fetchCompanies]);
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    fetchCompanyById();
+  };
+
   return (
     <div className="companies max-w-screen-lg">
+      <form onSubmit={handleSearchSubmit}>
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          placeholder="Search"
+          className="border border-gray-300 rounded-md text-black"
+        />
+        <button
+          type="submit"
+          className="border border-gray-300 rounded-md text-black"
+        >
+          Search
+        </button>
+      </form>
       <div className="flex justify-end">
         <OpenModalButton
           bgColor="blue"
@@ -62,7 +103,7 @@ const Companies = () => {
         page={page}
         isLastPage={isLastPage}
         setPage={setPage}
-        disable_index={0}
+        disable_index={1}
       />
     </div>
   );
