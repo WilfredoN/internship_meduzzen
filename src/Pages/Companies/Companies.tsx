@@ -1,13 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { info } from '../../Api/company';
 import CreateCompanyModal from '../../Components/Modal/CreateCompanyModal';
 import PaginationButton from '../../Components/Buttons/PaginationButton';
 import Table from '../../Components/Table/Table';
 import { updatePage } from '../../Store/paginationSlice';
 import { useAppDispatch } from '../../Store/store';
+import { useAppSelector } from '../../Store/hooks';
+import { setCompanies } from '../../Store/companiesSlice';
+import Pagination from '../../Components/Pagination';
+import OpenModalButton from '../../Components/Buttons/OpenModalButton';
 
 const Companies = () => {
-  const [companies, setCompanies] = useState([]);
+  const companies = useAppSelector((state) => state.companies.companies);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [selectedSize, setSelectedSize] = useState(10);
@@ -19,10 +23,10 @@ const Companies = () => {
     setIsModalOpen(false);
   };
 
-  const fetchCompanies = async () => {
+  const fetchCompanies = useCallback(async () => {
     try {
       const response = await info.getCompanies(page, pageSize);
-      setCompanies(response);
+      dispatch(setCompanies(response));
       dispatch(updatePage(page));
       console.log(`page: ${page}, pageSize: ${pageSize}`);
       console.log(response);
@@ -34,41 +38,25 @@ const Companies = () => {
     } catch (error) {
       console.error('Error fetching companies:', error);
     }
-  };
+  }, [page, pageSize, dispatch]);
 
   useEffect(() => {
-    console.log('useEffect');
     fetchCompanies();
-  }, [page, pageSize, selectedSize, dispatch, isLastPage]);
+  }, [fetchCompanies]);
+
   return (
     <div className="companies max-w-screen-lg">
-      <Table data={companies} onRowClick={(id: number) => console.log(id)} />
       <div className="flex justify-end">
-        <button
-          className="rounded-3xl bg-blue-500 text-white w-20 h-10 flex text-center justify-center items-center hover:bg-blue-700 
-          transition-colors duration-300 ease-in-out"
+        <OpenModalButton
+          bgColor="blue"
+          content="+"
+          textColor="white"
           onClick={() => setIsModalOpen(true)}
-        >
-          +
-        </button>
+        />
       </div>
+      <Table data={companies} onRowClick={(id: number) => console.log(id)} />
       <CreateCompanyModal isOpen={isModalOpen} onClose={closeModal} />
-      <PaginationButton
-        label="Previous"
-        onClick={() => {
-          setPage(page - 1);
-        }}
-        disabled={page === 1}
-      />
-      <PaginationButton
-        label="Next"
-        extraClasses="ml-8 mr-8"
-        onClick={() => {
-          setPage(page + 1);
-          console.log('Next ' + page);
-        }}
-        disabled={isLastPage}
-      />
+      <Pagination page={page} isLastPage={isLastPage} setPage={setPage} />
     </div>
   );
 };
