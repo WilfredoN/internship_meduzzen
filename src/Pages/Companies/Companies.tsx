@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import { info } from '../../Api/company';
+import OpenModalButton from '../../Components/Buttons/OpenModalButton';
 import CreateCompanyModal from '../../Components/Modal/CreateCompanyModal';
-import PaginationButton from '../../Components/Buttons/PaginationButton';
+import Pagination from '../../Components/Pagination';
 import Table from '../../Components/Table/Table';
+import { setCompanies } from '../../Store/companiesSlice';
+import { useAppSelector } from '../../Store/hooks';
 import { updatePage } from '../../Store/paginationSlice';
 import { useAppDispatch } from '../../Store/store';
-import { useAppSelector } from '../../Store/hooks';
-import { setCompanies } from '../../Store/companiesSlice';
-import Pagination from '../../Components/Pagination';
-import OpenModalButton from '../../Components/Buttons/OpenModalButton';
+import { CompanyDetailed } from '../../Types/Company';
 
 const Companies = () => {
   const companies = useAppSelector((state) => state.companies.companies);
@@ -28,8 +28,7 @@ const Companies = () => {
       const response = await info.getCompanies(page, pageSize);
       dispatch(setCompanies(response));
       dispatch(updatePage(page));
-      console.log(`page: ${page}, pageSize: ${pageSize}`);
-      console.log(response);
+
       if (response.length < pageSize) {
         setIsLastPage(true);
       } else {
@@ -39,21 +38,17 @@ const Companies = () => {
       console.error('Error fetching companies:', error);
     }
   }, [page, pageSize, dispatch]);
-  //FIXME: This function is not working as expected
-  /*
-Objects are not valid as a React child (found: object with keys
-   {user_id, user_email, user_firstname, user_lastname, user_avatar}).
- If you meant to render a collection of children, use an array instead.
-  */
 
   const fetchCompanyById = useCallback(async () => {
     try {
-      const response = await info.getCompanyById(searchTerm);
-      dispatch(setCompanies([response]));
+      const response = await info.getCompanies(1, 1000);
+      const filteredCompanies = response.filter((company: CompanyDetailed) =>
+        company.company_id.toString().includes(searchTerm),
+      );
+      dispatch(setCompanies(filteredCompanies));
       dispatch(updatePage(1));
-      console.log(response);
     } catch (error) {
-      console.error('Error fetching company:', error);
+      console.error('Error fetching companies:', error);
     }
   }, [searchTerm, dispatch]);
 
@@ -61,32 +56,31 @@ Objects are not valid as a React child (found: object with keys
     fetchCompanies();
   }, [fetchCompanies]);
 
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm.trim() === '') {
+        fetchCompanies();
+      } else {
+        fetchCompanyById();
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, fetchCompanies, fetchCompanyById]);
+
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
-  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    fetchCompanyById();
-  };
-
   return (
     <div className="companies max-w-screen-lg">
-      <form onSubmit={handleSearchSubmit}>
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={handleSearchChange}
-          placeholder="Search"
-          className="border border-gray-300 rounded-md text-black"
-        />
-        <button
-          type="submit"
-          className="border border-gray-300 rounded-md text-black"
-        >
-          Search
-        </button>
-      </form>
+      <input
+        type="text"
+        value={searchTerm}
+        onChange={handleSearchChange}
+        placeholder="Search"
+        className="border border-gray-300 rounded-md text-black"
+      />
       <div className="flex justify-end">
         <OpenModalButton
           bgColor="blue"
