@@ -12,7 +12,6 @@ export const info = {
                     page_size: pageSize,
                 }
             });
-            console.log(response.data.result.companies);
             return response.data.result.companies;
         } catch (error: any) {
             return { error: error.message };

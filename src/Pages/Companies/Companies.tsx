@@ -79,7 +79,7 @@ const Companies = () => {
         value={searchTerm}
         onChange={handleSearchChange}
         placeholder="Search"
-        className="border border-gray-300 rounded-md text-black"
+        className="border border-gray-300 rounded-full text-black px-4"
       />
       <div className="flex justify-end">
         <OpenModalButton
