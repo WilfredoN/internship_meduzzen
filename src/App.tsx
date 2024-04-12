@@ -31,6 +31,7 @@ function App() {
   const isAuth = user.isAuth;
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { logout } = useAuth0();
   const navigateToLogin = () => {
     dispatch(setIsAuth(false));
     navigate('/login');
@@ -57,9 +58,9 @@ function App() {
       };
       dispatch(setUser(combinedData));
       dispatch(setIsAuth(true));
-      console.log(companies);
-      console.log(combinedData);
     } catch (error) {
+      localStorage.clear();
+      logout({});
       navigateToLogin();
     } finally {
       dispatch(setLoading(false));
@@ -75,7 +76,7 @@ function App() {
           (await getAccessTokenSilently()) ||
           null;
         if (!token) {
-          console.log('No token found');
+          console.error('No token found');
           return;
         }
         localStorage.setItem('access_token', token);

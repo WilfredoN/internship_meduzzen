@@ -1,17 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { info } from '../../Api/company';
+import OpenModalButton from '../../Components/Buttons/OpenModalButton';
 import CreateCompanyModal from '../../Components/Modal/CreateCompanyModal';
-import PaginationButton from '../../Components/Buttons/PaginationButton';
+import Pagination from '../../Components/Pagination';
 import Table from '../../Components/Table/Table';
+import { setCompanies } from '../../Store/companiesSlice';
+import { useAppSelector } from '../../Store/hooks';
 import { updatePage } from '../../Store/paginationSlice';
 import { useAppDispatch } from '../../Store/store';
+import { CompanyDetailed } from '../../Types/Company';
 
 const Companies = () => {
-  const [companies, setCompanies] = useState([]);
+  const companies = useAppSelector((state) => state.companies.companies);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [selectedSize, setSelectedSize] = useState(10);
   const dispatch = useAppDispatch();
+  const [searchTerm, setSearchTerm] = useState('');
   const [isLastPage, setIsLastPage] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -19,13 +23,12 @@ const Companies = () => {
     setIsModalOpen(false);
   };
 
-  const fetchCompanies = async () => {
+  const fetchCompanies = useCallback(async () => {
     try {
       const response = await info.getCompanies(page, pageSize);
-      setCompanies(response);
+      dispatch(setCompanies(response));
       dispatch(updatePage(page));
-      console.log(`page: ${page}, pageSize: ${pageSize}`);
-      console.log(response);
+
       if (response.length < pageSize) {
         setIsLastPage(true);
       } else {
@@ -34,40 +37,67 @@ const Companies = () => {
     } catch (error) {
       console.error('Error fetching companies:', error);
     }
-  };
+  }, [page, pageSize, dispatch]);
+
+  const fetchCompanyById = useCallback(async () => {
+    try {
+      const response = await info.getCompanies(1, 1000);
+      const filteredCompanies = response.filter((company: CompanyDetailed) =>
+        company.company_id.toString().includes(searchTerm),
+      );
+      dispatch(setCompanies(filteredCompanies));
+      dispatch(updatePage(1));
+    } catch (error) {
+      console.error('Error fetching companies:', error);
+    }
+  }, [searchTerm, dispatch]);
 
   useEffect(() => {
-    console.log('useEffect');
     fetchCompanies();
-  }, [page, pageSize, selectedSize, dispatch, isLastPage]);
+  }, [fetchCompanies]);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm.trim() === '') {
+        fetchCompanies();
+      } else {
+        fetchCompanyById();
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, fetchCompanies, fetchCompanyById]);
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
   return (
     <div className="companies max-w-screen-lg">
-      <Table data={companies} onRowClick={(id: number) => console.log(id)} />
-      <div className="flex justify-end">
-        <button
-          className="rounded-3xl bg-blue-500 text-white w-20 h-10 flex text-center justify-center items-center hover:bg-blue-700 
-          transition-colors duration-300 ease-in-out"
-          onClick={() => setIsModalOpen(true)}
-        >
-          +
-        </button>
-      </div>
-      <CreateCompanyModal isOpen={isModalOpen} onClose={closeModal} />
-      <PaginationButton
-        label="Previous"
-        onClick={() => {
-          setPage(page - 1);
-        }}
-        disabled={page === 1}
+      <input
+        type="text"
+        value={searchTerm}
+        onChange={handleSearchChange}
+        placeholder="Search"
+        className="border border-gray-300 rounded-full text-black px-4"
       />
-      <PaginationButton
-        label="Next"
-        extraClasses="ml-8 mr-8"
-        onClick={() => {
-          setPage(page + 1);
-          console.log('Next ' + page);
-        }}
-        disabled={isLastPage}
+      <div className="flex justify-end">
+        <OpenModalButton
+          bgColor="blue"
+          content="+"
+          textColor="white"
+          onClick={() => setIsModalOpen(true)}
+        />
+      </div>
+      <Table data={companies} onRowClick={(id: number) => console.log(id)} />
+      <CreateCompanyModal isOpen={isModalOpen} onClose={closeModal} />
+      <Pagination
+        nextSymbol="Next"
+        prevSymbol="Prev"
+        page={page}
+        isLastPage={isLastPage}
+        setPage={setPage}
+        disable_index={1}
       />
     </div>
   );

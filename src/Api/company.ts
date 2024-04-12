@@ -12,8 +12,16 @@ export const info = {
                     page_size: pageSize,
                 }
             });
-            console.log(response.data.result.companies);
             return response.data.result.companies;
+        } catch (error: any) {
+            return { error: error.message };
+        }
+    },
+    getCompanyById: async (companyId: string) => {
+        try {
+            const response = await instance.get(`company/${companyId}/`);
+            console.log(response.data.result);
+            return response.data.result;
         } catch (error: any) {
             return { error: error.message };
         }

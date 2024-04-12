@@ -5,6 +5,7 @@ import Table from '../../Components/Table/Table';
 import { updatePage } from '../../Store/paginationSlice';
 import { useAppDispatch } from '../../Store/store';
 import { setSelectedUser } from '../../Store/userSlice';
+import Pagination from '../../Components/Pagination';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -44,21 +45,13 @@ const Users = () => {
   ) : (
     <div className="users">
       <Table data={users} onRowClick={(id: number) => getUserInfo(id)} />
-      <PaginationButton
-        label="Previous"
-        onClick={() => {
-          setPage(page - 1);
-          fetchUsers();
-        }}
-        disabled={page === 1}
-      />
-      <PaginationButton
-        label="Next"
-        extraClasses="ml-8 mr-8"
-        onClick={() => {
-          setPage(page + 1);
-        }}
-        disabled={page === pageSize || isLastPage}
+      <Pagination
+        nextSymbol="Next"
+        prevSymbol="Prev"
+        page={page}
+        isLastPage={isLastPage}
+        setPage={setPage}
+        disable_index={1}
       />
       <select
         className="border border-gray-300 rounded-md text-black"
